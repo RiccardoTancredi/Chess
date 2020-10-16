@@ -10,8 +10,8 @@ WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption('Chess')
 
 
-board = Board(WIN).create_board()
-print(board)
+board = Board(WIN)
+
 
 def get_row_col_from_mouse(pos):
     x, y = pos
@@ -37,6 +37,7 @@ def main():
                 pos = pygame.mouse.get_pos()
                 row, col = get_row_col_from_mouse(pos)
                 print(row, col) # we have to add the method
+                print(board.get_piece(row, col))
                 # game.select(row, col)
         
         draw.update()

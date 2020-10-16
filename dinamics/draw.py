@@ -20,7 +20,7 @@ class Draw:
             for col in range(COLS):
                 piece = self.board.get_piece(row,col)
                 if piece != 0:
-                    self.win.blit(piece, (row*SQUARE_SIZE - piece.get_width()//2, col*SQUARE_SIZE - piece.get_height()//2))
+                    self.win.blit(piece, (col*SQUARE_SIZE, row*SQUARE_SIZE))
                 else:
                     pass
                 # here we have to add the initial configuration of the chess board

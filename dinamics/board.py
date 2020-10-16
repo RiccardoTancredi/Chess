@@ -2,6 +2,11 @@ import pygame
 from .constants import ROWS, COLS, SQUARE_SIZE, WHITE, BLACK, GREY, BLACK_PIECES, WHITE_PIECES, BLACK_PAWN, WHITE_PAWN
 from .piece import Piece
 from .Pieces.Pawn import Pawn
+from .Pieces.King import King
+from .Pieces.Queen import Queen 
+from .Pieces.Bishop import Bishop
+from .Pieces.Knight import Knight
+from .Pieces.Rook import Rook 
 
 class Board:
     def __init__(self, win):

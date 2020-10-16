@@ -1,5 +1,6 @@
 import pygame
 from dinamics.constants import BLACK_PAWN, WHITE_PAWN, BLACK, WHITE
+
 class Pawn:
     def __init__(self):
         # self.color = color
