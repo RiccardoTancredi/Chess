@@ -6,7 +6,7 @@ class King:
         # self.color = color
         self.king = None
         
-    def pawn_color(self, color):
+    def king_color(self, color):
         if color == WHITE:
             self.king = WHITE_KING
         else:

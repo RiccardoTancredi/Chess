@@ -6,7 +6,7 @@ class Rook:
         # self.color = color
         self.rook = None
         
-    def pawn_color(self, color):
+    def rook_color(self, color):
         if color == WHITE:
             self.rook = WHITE_ROOK
         else:

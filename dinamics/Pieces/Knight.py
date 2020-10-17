@@ -6,7 +6,7 @@ class Knight:
         # self.color = color
         self.knight = None
         
-    def pawn_color(self, color):
+    def knight_color(self, color):
         if color == WHITE:
             self.knight = WHITE_KNIGHT
         else:

@@ -6,7 +6,7 @@ class Bishop:
         # self.color = color
         self.bishop = None
         
-    def pawn_color(self, color):
+    def bishop_color(self, color):
         if color == WHITE:
             self.bishop = WHITE_BISHOP
         else:

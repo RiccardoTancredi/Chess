@@ -15,8 +15,6 @@ class Board:
         self.create_board()
 
     def create_board(self):
-        # it draws the board transposed
-        # commit here
         for row in range(ROWS):
             self.board.append([])
             for col in range(COLS):

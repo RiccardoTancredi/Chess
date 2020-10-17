@@ -6,7 +6,7 @@ class Queen:
         # self.color = color
         self.queen = None
         
-    def pawn_color(self, color):
+    def queen_color(self, color):
         if color == WHITE:
             self.queen = WHITE_QUEEN
         else:
