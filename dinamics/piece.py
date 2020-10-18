@@ -26,8 +26,9 @@ class Piece:
     def select_piece(self):
         if self.name == "Pawn":
             self.name = Pawn().pawn_color(self.color)
+            # self.name = Pawn(self.color)
     
-        elif self.name == "King":
+        if self.name == "King":
             self.name = King().king_color(self.color)
 
         elif self.name == "Queen":

@@ -24,6 +24,7 @@ class Board:
                     self.board[row].append(WHITE_PIECES[col])
                 elif row == 1:
                     self.board[row].append(Piece(row, col, BLACK, "Pawn", self.win).select_piece()) # like this all the others
+                    # self.board[row].append(Pawn(BLACK).select)
                 elif row == ROWS - 2:
                     self.board[row].append(WHITE_PAWN)
                 else:
