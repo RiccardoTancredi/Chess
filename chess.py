@@ -45,9 +45,10 @@ def main():
                 chess_pos = get_row_col_from_mouse(pos)
 
                 piece = game.board.get_piece(chess_pos)
-                moves = piece.get_available_moves(chess_pos)
-                if moves:
-                    game.move_piece(chess_pos, moves[0])
+                if piece:
+                    moves = piece.get_available_moves(chess_pos)
+                    if moves:
+                        game.move_piece(chess_pos, moves[0])
                 print(chess_pos)
 
         draw.draw()
