@@ -11,7 +11,7 @@ from .pieces.queen import Queen
 from .pieces.rook import Rook
 
 C_BLACK = (0, 0, 0)
-C_WHITE = (0, 0, 0)
+C_WHITE = (255, 255, 255)
 
 
 class Draw:
