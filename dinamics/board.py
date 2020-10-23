@@ -47,16 +47,16 @@ class Board:
     def _create_board(self):
         row1_w = [Rook(WHITE), Knight(WHITE), Bishop(WHITE), Queen(WHITE),
                   King(WHITE), Bishop(WHITE), Knight(WHITE), Rook(WHITE)]
-        row2_w = [Pawn(WHITE)] * 8  # A list of 8 pawns
+        row2_w = [Pawn(WHITE)] * ROWS  # A list of 8 pawns
 
         row1_b = [Rook(BLACK), Knight(BLACK), Bishop(BLACK), Queen(BLACK),
                   King(BLACK), Bishop(BLACK), Knight(BLACK), Rook(BLACK)]
-        row2_b = [Pawn(BLACK)] * 8
+        row2_b = [Pawn(BLACK)] * ROWS
 
         self._board.append(row1_w)
         self._board.append(row2_w)
         for x in range(4):
-            self._board.append([None] * 8)  # A list of 8 empty elements
+            self._board.append([None] * ROWS)  # A list of 8 empty elements
 
         self._board.append(row2_b)
         self._board.append(row1_b)
