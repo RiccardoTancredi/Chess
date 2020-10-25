@@ -40,7 +40,7 @@ from .pieces.rook import Rook
 
 class Board:
     def __init__(self):
-        self._board = []
+        self.board = []
 
         self._create_board()
 
@@ -53,20 +53,21 @@ class Board:
                   King(BLACK), Bishop(BLACK), Knight(BLACK), Rook(BLACK)]
         row2_b = [Pawn(BLACK)] * ROWS
 
-        self._board.append(row1_w)
-        self._board.append(row2_w)
-        for x in range(4):
-            self._board.append([None] * ROWS)  # A list of 8 empty elements
+        self.board.append(row1_b)
+        self.board.append(row2_b)
 
-        self._board.append(row2_b)
-        self._board.append(row1_b)
+        for x in range(4):
+            self.board.append([None] * ROWS)  # A list of 8 empty elements
+
+        self.board.append(row2_w)
+        self.board.append(row1_w)
 
     def get_piece(self, position):
         row, col = position
-        return self._board[row][col]
+        return self.board[row][col]
 
     def move(self, start_pos, end_pos):
         srow, scol = start_pos
         erow, ecol = end_pos
-        self._board[erow][ecol] = self._board[srow][scol]
-        self._board[srow][scol] = None
+        self.board[erow][ecol] = self.board[srow][scol]
+        self.board[srow][scol] = 0

@@ -12,6 +12,7 @@ from .pieces.rook import Rook
 
 C_BLACK = (0, 0, 0)
 C_WHITE = (255, 255, 255)
+C_BLUE = (0, 0, 255)
 
 
 class Draw:
@@ -61,9 +62,17 @@ class Draw:
                 # so we have to define first the piece class and all the pieces classes:
                 # pieces = King, Queen, Rook, Bishop, Knight, Pawn
 
-    def update(self):
+    def update(self, moves = []):
         self.draw()
+        self.draw_valid_moves(moves)
         pygame.display.update()
+
+
+    def draw_valid_moves(self, moves):
+        self.moves = moves
+        for move in self.moves:
+            row, col = move
+            pygame.draw.circle(self.win, C_BLUE, (col*SQUARE_SIZE + SQUARE_SIZE//2, row*SQUARE_SIZE + SQUARE_SIZE//2), 10)
 
     def draw(self):
         self.draw_squares()

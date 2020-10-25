@@ -31,9 +31,9 @@ class Game:
         self.board = Board()
         self.turn = WHITE
 
-    def move_piece(self, piece_pos, position):
+    def move_piece(self, piece_pos, position, color):
         piece = self.board.get_piece(piece_pos)
-        moves = piece.get_available_moves(piece_pos)
+        moves = piece.get_available_moves(piece_pos, color)
 
         # it's just a basic move, need improvements
         if position in moves:

@@ -33,17 +33,25 @@
 #         return self.pawn
 
 from dinamics.piece import Piece
-
+from dinamics.constants import ROWS
 
 class Pawn(Piece):
-    def get_available_moves(self, position):
-        # current = position # this is the current position of the pawn
-        possible_moves = []
-        for x in range(position[0]-1, position[0]+2):
-            for y in range(position[1], position[1]+2):
-                # if board[x][y] == 0 or list(board[x][y]) == [piece for piece in BLACK_PIECES]:
-                #     possible_moves.append(x,y)
-                # if last_move was made by black pawn and pawns are next to each other and black pown moved by 2:
-                #     en passant
-                pass
-        return [(0, 0)]  # todo
+    def get_available_moves(self, position, color):
+        self.color = color
+        if position[0] == 0 or position[0] == ROWS:
+            # Promotion
+            pass      
+        elif color == "BLACK":
+                possible_moves = [(position[0] + 1 , position[1])]
+        else:
+            possible_moves = [(position[0] - 1, position[1])]
+        
+        return possible_moves
+
+    def piece_moved(self):
+        # This methof is made in order to track if a piece has been moved: this is for pawn and particoular moves, like casteling, in which,
+        # if the king has already been moved, it can't castle, or if a pawn hasn't been moved yet, it can double jump.
+
+        # TO IMPLEMENT
+
+        return True

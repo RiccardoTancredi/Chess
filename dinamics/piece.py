@@ -69,7 +69,7 @@ class Piece:
 
     # position is a tuple: (row, column) with the current position
     # return a collection of tuples ex: [(1, 2), (1, 3)]
-    def get_available_moves(self, position):
+    def get_available_moves(self, position, color):
         # self. board = Board()
         # This is like the default implementation: if this function is not implemented
         # in the subclasses this function will be called (but we decided to throw an error)

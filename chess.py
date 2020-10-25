@@ -29,6 +29,7 @@ draw = Draw(WIN, game, "./assets")
 def main():
     run = True
     clock = pygame.time.Clock()
+    moves = []
     # draw = Draw(WIN)
     while run:
         clock.tick(FPS)
@@ -40,19 +41,35 @@ def main():
             if event.type == pygame.QUIT:
                 run = False
 
-            if event.type == pygame.MOUSEBUTTONDOWN:
+            if event.type == pygame.MOUSEBUTTONDOWN and moves:
+                new_pos = get_row_col_from_mouse(pygame.mouse.get_pos())
+                if new_pos in moves:
+                    game.move_piece(chess_pos, moves[0], piece.color)
+                    print("Here we go. I'm moving it")
+                    print(chess_pos)
+                    moves = []
+                else:
+                    moves = []
+
+            elif event.type == pygame.MOUSEBUTTONDOWN:
                 pos = pygame.mouse.get_pos()
                 chess_pos = get_row_col_from_mouse(pos)
-
+                print(chess_pos)
                 piece = game.board.get_piece(chess_pos)
                 if piece:
-                    moves = piece.get_available_moves(chess_pos)
-                    if moves:
-                        game.move_piece(chess_pos, moves[0])
-                print(chess_pos)
+                    moves = piece.get_available_moves(chess_pos, piece.color)
+                    draw.draw_valid_moves(moves)
+                    # print(moves)
+                # if event.type == pygame.MOUSEBUTTONDOWN:
+                    # new_pos = get_row_col_from_mouse(pygame.mouse.get_pos())
+                    # print(new_pos)
+                    # if new_pos in moves:
+                # game.move_piece(chess_pos, moves[0], piece.color)
+                # print("Here we go. I'm moving it")
+                # print(chess_pos)
 
         draw.draw()
-        draw.update()
+        draw.update(moves)
     pygame.quit()
 
 
