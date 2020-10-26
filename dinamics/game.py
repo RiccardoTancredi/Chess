@@ -76,3 +76,9 @@ class Game:
                 trimmed.append(move)
 
         return trimmed
+
+    # def _delete_moves(self, trimmed):
+    #     for move in trimmed:
+    #         other = self.board.get_piece(move):
+    #         if other:
+    #             for x in range(move[0], ROWS):

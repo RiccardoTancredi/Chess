@@ -75,4 +75,4 @@ class Board:
         srow, scol = start_pos
         erow, ecol = end_pos
         self.board[erow][ecol] = self.board[srow][scol]
-        self.board[srow][scol] = 0
+        self.board[srow][scol] = None
