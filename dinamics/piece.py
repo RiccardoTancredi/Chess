@@ -75,3 +75,10 @@ class Piece:
         # in the subclasses this function will be called (but we decided to throw an error)
         # So we are saying: if you subclass this class, you must implement this method!
         raise NotImplementedError
+
+    # using x, y axes
+    def get_movements_test(self):
+        return []
+
+    def on_move(self, start, end):
+        pass

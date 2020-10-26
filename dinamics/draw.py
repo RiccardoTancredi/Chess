@@ -22,27 +22,40 @@ class Draw:
         self.scale_factor = (int(WIDTH * 50 / 400), int(HEIGHT * 50 / 400))
 
         self.white_pieces = {
-            Pawn: pygame.transform.scale(pygame.image.load(f'{assets_dir}/white_pawn.png'), self.scale_factor),
-            Knight: pygame.transform.scale(pygame.image.load(f'{assets_dir}/white_knight.png'), self.scale_factor),
-            King: pygame.transform.scale(pygame.image.load(f'{assets_dir}/white_king.png'), self.scale_factor),
-            Queen: pygame.transform.scale(pygame.image.load(f'{assets_dir}/white_queen.png'), self.scale_factor),
-            Rook: pygame.transform.scale(pygame.image.load(f'{assets_dir}/white_rook.png'), self.scale_factor),
-            Bishop: pygame.transform.scale(pygame.image.load(f'{assets_dir}/white_bishop.png'), self.scale_factor)
+            Pawn: pygame.transform.scale(pygame.image.load(f'{assets_dir}/white_pawn.png'),
+                                         self.scale_factor),
+            Knight: pygame.transform.scale(pygame.image.load(f'{assets_dir}/white_knight.png'),
+                                           self.scale_factor),
+            King: pygame.transform.scale(pygame.image.load(f'{assets_dir}/white_king.png'),
+                                         self.scale_factor),
+            Queen: pygame.transform.scale(pygame.image.load(f'{assets_dir}/white_queen.png'),
+                                          self.scale_factor),
+            Rook: pygame.transform.scale(pygame.image.load(f'{assets_dir}/white_rook.png'),
+                                         self.scale_factor),
+            Bishop: pygame.transform.scale(pygame.image.load(f'{assets_dir}/white_bishop.png'),
+                                           self.scale_factor)
         }
         self.black_pieces = {
-            Pawn: pygame.transform.scale(pygame.image.load(f'{assets_dir}/black_pawn.png'), self.scale_factor),
-            Knight: pygame.transform.scale(pygame.image.load(f'{assets_dir}/black_knight.png'), self.scale_factor),
-            King: pygame.transform.scale(pygame.image.load(f'{assets_dir}/black_king.png'), self.scale_factor),
-            Queen: pygame.transform.scale(pygame.image.load(f'{assets_dir}/black_queen.png'), self.scale_factor),
-            Rook: pygame.transform.scale(pygame.image.load(f'{assets_dir}/black_rook.png'), self.scale_factor),
-            Bishop: pygame.transform.scale(pygame.image.load(f'{assets_dir}/black_bishop.png'), self.scale_factor)
+            Pawn: pygame.transform.scale(pygame.image.load(f'{assets_dir}/black_pawn.png'),
+                                         self.scale_factor),
+            Knight: pygame.transform.scale(pygame.image.load(f'{assets_dir}/black_knight.png'),
+                                           self.scale_factor),
+            King: pygame.transform.scale(pygame.image.load(f'{assets_dir}/black_king.png'),
+                                         self.scale_factor),
+            Queen: pygame.transform.scale(pygame.image.load(f'{assets_dir}/black_queen.png'),
+                                          self.scale_factor),
+            Rook: pygame.transform.scale(pygame.image.load(f'{assets_dir}/black_rook.png'),
+                                         self.scale_factor),
+            Bishop: pygame.transform.scale(pygame.image.load(f'{assets_dir}/black_bishop.png'),
+                                           self.scale_factor)
         }
 
     def draw_squares(self):
         self.win.fill(C_BLACK)
         for row in range(ROWS):
             for col in range(row % 2, COLS, 2):
-                pygame.draw.rect(self.win, C_WHITE, (row * SQUARE_SIZE, col * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
+                pygame.draw.rect(self.win, C_WHITE,
+                                 (row * SQUARE_SIZE, col * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
 
     def draw_pieces(self):
         for row in range(ROWS):
@@ -62,17 +75,17 @@ class Draw:
                 # so we have to define first the piece class and all the pieces classes:
                 # pieces = King, Queen, Rook, Bishop, Knight, Pawn
 
-    def update(self, moves = []):
+    def update(self, moves=[]):  # non puoi usare [] come default
         self.draw()
         self.draw_valid_moves(moves)
         pygame.display.update()
-
 
     def draw_valid_moves(self, moves):
         self.moves = moves
         for move in self.moves:
             row, col = move
-            pygame.draw.circle(self.win, C_BLUE, (col*SQUARE_SIZE + SQUARE_SIZE//2, row*SQUARE_SIZE + SQUARE_SIZE//2), 10)
+            pygame.draw.circle(self.win, C_BLUE, (
+            col * SQUARE_SIZE + SQUARE_SIZE // 2, row * SQUARE_SIZE + SQUARE_SIZE // 2), 10)
 
     def draw(self):
         self.draw_squares()

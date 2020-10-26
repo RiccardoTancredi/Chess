@@ -35,17 +35,22 @@
 from dinamics.piece import Piece
 from dinamics.constants import ROWS
 
+
 class Pawn(Piece):
+    def __init__(self, color):
+        super().__init__(color)
+        self.first_move = True
+
     def get_available_moves(self, position, color):
         self.color = color
         if position[0] == 0 or position[0] == ROWS:
             # Promotion
-            pass      
+            pass
         elif color == "BLACK":
-                possible_moves = [(position[0] + 1 , position[1])]
+            possible_moves = [(position[0] + 1, position[1])]
         else:
             possible_moves = [(position[0] - 1, position[1])]
-        
+
         return possible_moves
 
     def piece_moved(self):
@@ -55,3 +60,13 @@ class Pawn(Piece):
         # TO IMPLEMENT
 
         return True
+
+    def get_movements_test(self):
+        if self.first_move:
+            return [(0, 1), (0, 2)]
+
+        return [(0, 1)]
+
+    def on_move(self, start, end):
+        if self.first_move:
+            self.first_move = False

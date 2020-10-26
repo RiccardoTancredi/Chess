@@ -22,3 +22,7 @@ from dinamics.piece import Piece
 class Knight(Piece):
     def get_available_moves(self, position):
         return [(0, 0)]  # todo
+
+    def get_movements_test(self):
+        return [(1, 2), (2, 1), (-1, 2), (-2, 1),       # le 4 possibili L (se sono in (0,0))
+                (-1, -2), (-2, -1), (1, -2), (2, -1)]

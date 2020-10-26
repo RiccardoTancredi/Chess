@@ -1,4 +1,5 @@
 # import pygame
+from dinamics.piece import Piece
 from .constants import ROWS, COLS, SQUARE_SIZE, WHITE, BLACK
 from .pieces.pawn import Pawn
 from .pieces.king import King
@@ -47,11 +48,15 @@ class Board:
     def _create_board(self):
         row1_w = [Rook(WHITE), Knight(WHITE), Bishop(WHITE), Queen(WHITE),
                   King(WHITE), Bishop(WHITE), Knight(WHITE), Rook(WHITE)]
-        row2_w = [Pawn(WHITE)] * ROWS  # A list of 8 pawns
+        row2_w = []
+        for i in range(ROWS):
+            row2_w.append(Pawn(WHITE))
 
         row1_b = [Rook(BLACK), Knight(BLACK), Bishop(BLACK), Queen(BLACK),
                   King(BLACK), Bishop(BLACK), Knight(BLACK), Rook(BLACK)]
-        row2_b = [Pawn(BLACK)] * ROWS
+        row2_b = []
+        for i in range(ROWS):
+            row2_b.append(Pawn(BLACK))
 
         self.board.append(row1_b)
         self.board.append(row2_b)
@@ -62,7 +67,7 @@ class Board:
         self.board.append(row2_w)
         self.board.append(row1_w)
 
-    def get_piece(self, position):
+    def get_piece(self, position) -> Piece:
         row, col = position
         return self.board[row][col]
 
