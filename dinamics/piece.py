@@ -82,3 +82,20 @@ class Piece:
 
     def on_move(self, start, end):
         pass
+
+    def delete_moves(self, board, position, moves):
+
+        raise NotImplementedError
+
+    def eat_piece(self, board, position, moves):
+        pass    
+
+    def under_check(self):
+        # here we have to check if the king is under attack. How?
+        # A possible solution could be, every move, to see if the moves of each one of the opponent's pieces have the king position as a possible move
+        # Computationally this is too expensive, IS think. So what?
+
+        # ToDO
+
+        pass
+

@@ -57,7 +57,7 @@ class Board:
         row2_b = []
         for i in range(ROWS):
             row2_b.append(Pawn(BLACK))
-
+    
         self.board.append(row1_b)
         self.board.append(row2_b)
 

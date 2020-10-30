@@ -6,7 +6,7 @@ from dinamics.constants import ROWS, COLS
 class Game:
     def __init__(self):
         self.board = Board()
-        self.turn = WHITE
+        self.turn = "WHITE"
 
     def move_piece(self, piece_pos, position, color):
         piece = self.board.get_piece(piece_pos)
@@ -15,6 +15,7 @@ class Game:
         # it's just a basic move, need improvements
         if position in moves:
             self.board.move(piece_pos, position)
+        
 
     def move_piece_test(self, start, end, check=True):
         piece = self.board.get_piece(start)
@@ -28,6 +29,7 @@ class Game:
 
         self.board.move(start, end)
         piece.on_move(start, end)  # chiamiamo questo metodo una volta che modifichiamo un pezzo
+        self.change_turn()
 
     def get_possible_moves(self, position):
         piece = self.board.get_piece(position)
@@ -37,7 +39,8 @@ class Game:
         moves = piece.get_movements_test()
         moves = self._add_moves_to_pos(piece, position, moves)
         moves = self._trim_moves(moves)
-
+        moves = self._delete_moves(piece, self.board, position, moves)
+        moves = self._eat_piece(piece, self.board, position, moves)
         # vogliamo iterare le mosse e allo stesso tempo modificare la lista, quindi dobbiamo crearne un'altra con list(...)
         for move in list(moves):
             other = self.board.get_piece(move)
@@ -77,8 +80,15 @@ class Game:
 
         return trimmed
 
-    # def _delete_moves(self, trimmed):
-    #     for move in trimmed:
-    #         other = self.board.get_piece(move):
-    #         if other:
-    #             for x in range(move[0], ROWS):
+    def _delete_moves(self, piece, board, position, moves):
+        return piece.delete_moves(board, position, moves)
+
+    def _eat_piece(self, piece, board, position, moves):
+        return piece.eat_piece(board, position, moves) 
+
+    def change_turn(self):
+        if self.turn == "WHITE":
+            self.turn = "BLACK"
+        else:
+            self.turn = "WHITE"
+        # return turn

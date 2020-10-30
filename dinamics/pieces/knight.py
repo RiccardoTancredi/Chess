@@ -26,3 +26,9 @@ class Knight(Piece):
     def get_movements_test(self):
         return [(1, 2), (2, 1), (-1, 2), (-2, 1),       # le 4 possibili L (se sono in (0,0))
                 (-1, -2), (-2, -1), (1, -2), (2, -1)]
+
+    def delete_moves(self, board, position, moves):
+        pass
+
+    def eat_piece(self, board, position, moves):
+        pass

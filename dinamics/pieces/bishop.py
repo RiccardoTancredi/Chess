@@ -17,14 +17,69 @@
 #         pass
 
 from dinamics.piece import Piece
-
+from dinamics.constants import ROWS, COLS
 
 class Bishop(Piece):
-    def get_available_moves(self, position):
-        return [(0, 0)]  # todo
+    def __init__(self, color):
+        super().__init__(color)
+    
+    def get_available_moves(self, position, color):
+        self.color = color
+        pass
 
     def get_movements_test(self):
-        return [(1, 1), (2, 2), (3, 3), (4, 4), (5, 5), (6, 6), (7, 7),      # le 4 possibili L (se sono in (0,0))
+        return [(1, 1), (2, 2), (3, 3), (4, 4), (5, 5), (6, 6), (7, 7),
                 (-1, -1), (-2, -2), (-3, -3), (-4, -4), (-5, -5), (-6, -6), (-7, -7),
-                (1, -1), (2, -2), (3, -3), (4, -4), (5, -5), (6, -6), (7, -7),      # le 4 possibili L (se sono in (0,0))
+                (1, -1), (2, -2), (3, -3), (4, -4), (5, -5), (6, -6), (7, -7),
                 (-1, 1), (-2, 2), (-3, 3), (-4, 4), (-5, 5), (-6, 6), (-7, 7)]
+
+    def delete_moves(self, board, position, moves):
+        for i in range(ROWS):
+            for j in range(COLS):
+                piece = board.get_piece((i, j))
+                if self.color == "WHITE":
+                    if piece and  piece.color == "WHITE" and (i, j) in moves:
+                        # for col in range(position[0]-column, -1, -1):
+                        #     if (col, position[1]) in moves:
+                        
+                        for l in range(i, ROWS):
+                            for k in range(j, COLS):
+                                # if (position[0] - l, position[1] - k) in moves:
+                                #     moves.remove((position[0] - l, position[1] - k))
+                                # if (position[0] - l, position[1] + k) in moves:
+                                #     moves.remove((position[0] - l, position[1] + k)) 
+                                if (l, k) in moves:  
+                                    moves.remove((l, k))   
+                else:
+                    if self.color == "BLACK":
+                            # for col in range(position[0]+column, ROWS):
+                            #     if (col, position[1]) in moves:
+                        if piece and (i, j) in moves: #and piece.color == "BLACK"
+                            if j < position[1] and i > position[0]:
+                                for l in range(i, ROWS):
+                                    for k in range(j):
+                                        if (l, k) in moves:  
+                                            moves.remove((l, k))  
+                            elif j > position[1] and i < position[0]:
+                                for l in range(i):
+                                    for k in range(j, COLS):
+                                        if (l, k) in moves:  
+                                            moves.remove((l, k)) 
+                            elif  j < position[1] and i < position[0]:
+                                for l in range(i):
+                                    for k in range(j):
+                                        if (l, k) in moves:  
+                                            moves.remove((l, k)) 
+                            elif j > position[1] and i > position[0]:
+                                for l in range(i, ROWS):
+                                    for k in range(j, ROWS):
+                                        if (l, k) in moves:  
+                                            moves.remove((l, k)) 
+
+
+                                            #To be continue
+                                
+        return moves
+
+    def eat_piece(self, board, position, moves):
+        return moves
