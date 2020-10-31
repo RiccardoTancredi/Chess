@@ -99,3 +99,13 @@ class Piece:
 
         pass
 
+    def check(self):
+        # in this method we see if a piece has made a check or maybe a checkmate. 
+        # here we check if the king position is in the possible moves the piece can do. In that case we want the oppont to cancel the check, by moving the king or
+        # by eating the piece which is doing check. This method could replace the method before (under_check) 
+
+        # This method must be called after every move
+ 
+        # Furthermore, in game.py, we want the oppont to do something (eating the piece, moving the king...) in order to not do an irregular move.
+        
+        pass

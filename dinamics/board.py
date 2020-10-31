@@ -69,7 +69,10 @@ class Board:
 
     def get_piece(self, position) -> Piece:
         row, col = position
-        return self.board[row][col]
+        if 0 <= row <= ROWS-1 and 0 <= col <= COLS-1:
+            return self.board[row][col]
+        else:
+            pass
 
     def move(self, start_pos, end_pos):
         srow, scol = start_pos
