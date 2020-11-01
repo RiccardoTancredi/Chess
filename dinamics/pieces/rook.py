@@ -2,8 +2,17 @@ from dinamics.piece import Piece
 from dinamics.constants import ROWS, COLS
 
 class Rook(Piece):
+    def __init__(self, color):
+        super().__init__(color)
+        self.first_move = True
+
+
     def get_available_moves(self, position):
         pass
+
+    def on_move(self, start, end):
+        if self.first_move:
+            self.first_move = False
 
     def get_movements_test(self):
         basic_moves = []
