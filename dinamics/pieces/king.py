@@ -1,23 +1,22 @@
-# import pygame
-# from dinamics.constants import BLACK_KING, WHITE_KING, BLACK, WHITE
-#
-# class King:
-#     def __init__(self):
-#         # self.color = color
-#         self.king = None
-#
-#     def king_color(self, color):
-#         if color == WHITE:
-#             self.king = WHITE_KING
-#         else:
-#             self.king = BLACK_KING
-#         return self.king
-#
-#     def movements(self):
-#         pass
 from dinamics.piece import Piece
 
 
 class King(Piece):
+    def __init__(self, color):
+        super().__init__(color)
+
     def get_available_moves(self, position):
-        return [(0, 0)]  # todo
+        pass
+
+    def get_movements_test(self):
+        return [(0, 0), (0, 1), (1, 1), (1, 0), (1, -1), (0, -1), (-1, -1), (-1, 0), (-1, 1)]
+    
+    def delete_moves(self, board, position, moves):
+        return moves
+
+    def eat_piece(self, board, position, moves):
+        return moves
+
+    def castling(self):
+        pass
+
