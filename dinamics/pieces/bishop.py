@@ -6,10 +6,7 @@ class Bishop(Piece):
     def __init__(self, color):
         super().__init__(color)
 
-    def get_available_moves(self, position, color):
-        pass
-
-    def get_movements_test(self):
+    def get_movements(self):
         return [(1, 1), (2, 2), (3, 3), (4, 4), (5, 5), (6, 6), (7, 7),
                 (-1, -1), (-2, -2), (-3, -3), (-4, -4), (-5, -5), (-6, -6), (-7, -7),
                 (1, -1), (2, -2), (3, -3), (4, -4), (5, -5), (6, -6), (7, -7),
@@ -44,5 +41,5 @@ class Bishop(Piece):
 
         return moves
 
-    def eat_piece(self, board, position, moves):
+    def add_moves(self, board, position, moves):
         return moves

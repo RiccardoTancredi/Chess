@@ -26,6 +26,7 @@ game = Game()
 draw = Draw(WIN, game, "./assets")
 
 
+# it doesn't work anymore
 def main():
     run = True
     clock = pygame.time.Clock()
@@ -61,9 +62,9 @@ def main():
                     draw.draw_valid_moves(moves)
                     # print(moves)
                 # if event.type == pygame.MOUSEBUTTONDOWN:
-                    # new_pos = get_row_col_from_mouse(pygame.mouse.get_pos())
-                    # print(new_pos)
-                    # if new_pos in moves:
+                # new_pos = get_row_col_from_mouse(pygame.mouse.get_pos())
+                # print(new_pos)
+                # if new_pos in moves:
                 # game.move_piece(chess_pos, moves[0], piece.color)
                 # print("Here we go. I'm moving it")
                 # print(chess_pos)

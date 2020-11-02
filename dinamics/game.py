@@ -9,21 +9,13 @@ class Game:
         self.board = Board()
         self.turn = WHITE
 
-    def move_piece(self, piece_pos, position, color):
-        piece = self.board.get_piece(piece_pos)
-        moves = piece.get_available_moves(piece_pos, color)
-
-        # it's just a basic move, need improvements
-        if position in moves:
-            self.board.move(piece_pos, position, piece)
-
-    def move_piece_test(self, start, end, check=True):
+    def move_piece(self, start, end, check=True):
         piece = self.board.get_piece(start)
         if not piece:
             return
 
         if check:  # se vogliamo controllare che sia una mossa valida. potremo non volerlo quando usiamo la grafica
-            moves = piece.get_movements_test()
+            moves = piece.get_movements()
             if end not in moves:
                 return
 
@@ -36,7 +28,7 @@ class Game:
         if not piece:
             return []
 
-        moves = piece.get_movements_test()
+        moves = piece.get_movements()
         moves = self._add_moves_to_pos(piece, position, moves)
         moves = self._remove_outside_board(moves)
         moves = self._delete_moves(piece, self.board, position, moves)
@@ -86,7 +78,7 @@ class Game:
         return piece.delete_moves(board, position, moves)
 
     def _eat_piece(self, piece, board, position, moves):
-        return piece.eat_piece(board, position, moves)
+        return piece.add_moves(board, position, moves)
 
     def _castling(self, king, board, position, moves):
         return king.castling(board, position, moves)

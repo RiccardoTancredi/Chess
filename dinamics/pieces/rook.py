@@ -7,14 +7,11 @@ class Rook(Piece):
         super().__init__(color)
         self.first_move = True
 
-    def get_available_moves(self, position):
-        pass
-
     def first_rook_move(self):
         if self.first_move:
             self.first_move = False
 
-    def get_movements_test(self):
+    def get_movements(self):
         basic_moves = []
         for j in range(-COLS + 1, COLS):
             basic_moves.append((0, j))
@@ -52,5 +49,5 @@ class Rook(Piece):
 
         return moves
 
-    def eat_piece(self, board, position, moves):
+    def add_moves(self, board, position, moves):
         return moves

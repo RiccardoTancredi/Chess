@@ -44,14 +44,14 @@ def main():
                 print(pos)
                 if selected and pos in moves:
                     if piece and piece.color == turn:
-                        game.move_piece_test(selected, pos, check=False)
+                        game.move_piece(selected, pos, check=False)
                         selected = None
                         moves = []
                     else:
                         print("This is not yout turn. Wait until the opponent has moved")
 
                 else:
-                    selected = tuple(pos)
+                    selected = pos
                     moves = game.get_possible_moves(selected)
                     piece = game.board.get_piece(selected)
                     if piece and piece.color == turn:

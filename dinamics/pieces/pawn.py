@@ -7,57 +7,50 @@ class Pawn(Piece):
         super().__init__(color)
         self.first_move = True
 
-    def get_available_moves(self, position, color):
-        self.color = color
-        possible_moves = []
-        if position[0] == 0 or position[0] == ROWS:
-            # Promotion
-            pass
-        elif color == BLACK:
-            possible_moves = [(position[0] + 1, position[1])]
-        else:
-            possible_moves = [(position[0] - 1, position[1])]
-
-        return possible_moves
-
     def piece_moved(self):
         # This method is made in order to track if a piece has been moved: this is for pawn and particoular moves, like casteling, in which,
         # if the king has already been moved, it can't castle, or if a pawn hasn't been moved yet, it can double jump.
 
         # TO IMPLEMENT
+        # we can now use self.move_history
 
         return True
 
-    def get_movements_test(self):
-        if self.first_move:
+    def get_movements(self):
+        if len(self.moves_history) == 0:
             return [(0, 1), (0, 2)]
 
         return [(0, 1)]
 
-    def on_move(self, start, end):
-        if self.first_move:
-            self.first_move = False
+        # possible_moves = []
+        # if position[0] == 0 or position[0] == ROWS:
+        #     # Promotion
+        #     pass
+        # elif color == BLACK:
+        #     possible_moves = [(position[0] + 1, position[1])]
+        # else:
+        #     possible_moves = [(position[0] - 1, position[1])]
+        #
+        # return possible_moves
 
     def delete_moves(self, board, position, moves):
         for i in range(ROWS):
             for j in range(COLS):
                 if self.color == WHITE:
                     for column in range(1, 3):
-                        if board.get_piece((position[0] - column, position[1])) and (
-                        position[0] - column, position[1]) in moves:
-                            for col in range(position[0] - column, -1, -1):
+                        if board.get_piece((position[0]-column, position[1])) and (position[0]-column, position[1]) in moves:
+                            for col in range(position[0]-column, -1, -1):
                                 if (col, position[1]) in moves:
                                     moves.remove((col, position[1]))
                 else:
                     for column in range(1, 3):
-                        if board.get_piece((position[0] + column, position[1])) and (
-                        position[0] + column, position[1]) in moves:
-                            for col in range(position[0] + column, ROWS):
+                        if board.get_piece((position[0]+column, position[1])) and (position[0]+column, position[1]) in moves:
+                            for col in range(position[0]+column, ROWS):
                                 if (col, position[1]) in moves:
                                     moves.remove((col, position[1]))
         return moves
 
-    def eat_piece(self, board, position, moves):
+    def add_moves(self, board, position, moves):
         if self.color == WHITE:
             # if position[0] - 1 >= 0 and position[1] - 1 >= 0 and position[1] + 1 <= COLS-1:
             if board.get_piece((position[0] - 1, position[1] - 1)):
@@ -71,3 +64,4 @@ class Pawn(Piece):
             if board.get_piece((position[0] + 1, position[1] - 1)):
                 moves.append((position[0] + 1, position[1] - 1))
         return moves
+

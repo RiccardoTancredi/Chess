@@ -6,10 +6,8 @@ class Knight(Piece):
     def __init__(self, color):
         super().__init__(color)
 
-    def get_available_moves(self, position):
-        pass
 
-    def get_movements_test(self):
+    def get_movements(self):
         return [(1, 2), (2, 1), (-1, 2), (-2, 1),
                 (-1, -2), (-2, -1), (1, -2), (2, -1)]
 
@@ -21,5 +19,5 @@ class Knight(Piece):
                     moves.remove((i, j))
         return moves
 
-    def eat_piece(self, board, position, moves):
+    def add_moves(self, board, position, moves):
         return moves
