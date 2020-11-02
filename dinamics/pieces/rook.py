@@ -10,7 +10,11 @@ class Rook(Piece):
     def get_available_moves(self, position):
         pass
 
-    def on_move(self, start, end):
+    # def on_move(self, start, end):
+    #     if self.first_move:
+    #         self.first_move = False
+    
+    def first_rook_move(self):
         if self.first_move:
             self.first_move = False
 

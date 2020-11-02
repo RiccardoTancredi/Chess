@@ -9,36 +9,6 @@ from .pieces.knight import Knight
 from .pieces.rook import Rook
 
 
-# class Board:
-#     def __init__(self, win):
-#         self.board = []
-#         self.win = win
-#         self.create_board()
-#
-#     def create_board(self):
-#         for row in range(ROWS):
-#             self.board.append([])
-#             for col in range(COLS):
-#                 if row == 0:
-#                     self.board[row].append(BLACK_PIECES[col])
-#                 elif row == ROWS - 1:
-#                     self.board[row].append(WHITE_PIECES[col])
-#                 elif row == 1:
-#                     self.board[row].append(
-#                         Piece(row, col, BLACK, "Pawn", self.win).select_piece())  # like this all the others
-#                     # self.board[row].append(Pawn(BLACK).select)
-#                 elif row == ROWS - 2:
-#                     self.board[row].append(WHITE_PAWN)
-#                 else:
-#                     self.board[row].append(0)
-#                 # here we have to add the initial configuration of the chess board
-#                 # so we have to define first the piece class and all the pieces classes:
-#                 # pieces = King, Queen, Rook, Bishop, Knight, Pawn
-#
-#     def get_piece(self, row, col):
-#         return self.board[row][col]
-
-
 class Board:
     def __init__(self):
         self.board = []
@@ -74,8 +44,13 @@ class Board:
         else:
             pass
 
-    def move(self, start_pos, end_pos):
+    def move(self, start_pos, end_pos, piece):
         srow, scol = start_pos
         erow, ecol = end_pos
         self.board[erow][ecol] = self.board[srow][scol]
         self.board[srow][scol] = None
+        if piece.__class__.__name__ == "King" and abs(ecol - scol) == 2:
+            if ecol - scol > 0: # the king is doing the short castling
+                self.board[srow][scol+1], self.board[srow][ROWS-1] = self.board[srow][ROWS-1], None
+            if ecol - scol < 0: # long castling
+                self.board[srow][scol-1], self.board[srow][0] = self.board[srow][0], None

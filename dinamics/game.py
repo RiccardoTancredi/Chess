@@ -14,7 +14,7 @@ class Game:
 
         # it's just a basic move, need improvements
         if position in moves:
-            self.board.move(piece_pos, position)
+            self.board.move(piece_pos, position, piece)
         
 
     def move_piece_test(self, start, end, check=True):
@@ -27,7 +27,7 @@ class Game:
             if end not in moves:
                 return
 
-        self.board.move(start, end)
+        self.board.move(start, end, piece)
         piece.on_move(start, end)  # chiamiamo questo metodo una volta che modifichiamo un pezzo
         self.change_turn()
 
@@ -41,6 +41,8 @@ class Game:
         moves = self._trim_moves(moves)
         moves = self._delete_moves(piece, self.board, position, moves)
         moves = self._eat_piece(piece, self.board, position, moves)
+        if piece.__class__.__name__ == "King":
+            moves = self._castling(piece, self.board, position, moves)
         # vogliamo iterare le mosse e allo stesso tempo modificare la lista, quindi dobbiamo crearne un'altra con list(...)
         for move in list(moves):
             other = self.board.get_piece(move)
@@ -85,6 +87,9 @@ class Game:
 
     def _eat_piece(self, piece, board, position, moves):
         return piece.eat_piece(board, position, moves) 
+
+    def _castling(self, king, board, position, moves):
+        return king.castling(board, position, moves)
 
     def change_turn(self):
         if self.turn == "WHITE":
