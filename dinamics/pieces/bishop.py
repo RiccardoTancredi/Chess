@@ -1,12 +1,12 @@
 from dinamics.piece import Piece
 from dinamics.constants import ROWS, COLS
 
+
 class Bishop(Piece):
     def __init__(self, color):
         super().__init__(color)
-    
+
     def get_available_moves(self, position, color):
-        self.color = color
         pass
 
     def get_movements_test(self):
@@ -24,23 +24,23 @@ class Bishop(Piece):
                     if j < position[1] and i > position[0]:
                         for l in range(i, ROWS):
                             for k in range(j):
-                                if (l, k) in moves:  
-                                    moves.remove((l, k))  
+                                if (l, k) in moves:
+                                    moves.remove((l, k))
                     elif j > position[1] and i < position[0]:
                         for l in range(i):
                             for k in range(j, COLS):
-                                if (l, k) in moves:  
-                                    moves.remove((l, k)) 
-                    elif  j < position[1] and i < position[0]:
+                                if (l, k) in moves:
+                                    moves.remove((l, k))
+                    elif j < position[1] and i < position[0]:
                         for l in range(i):
                             for k in range(j):
-                                if (l, k) in moves:  
-                                    moves.remove((l, k)) 
+                                if (l, k) in moves:
+                                    moves.remove((l, k))
                     elif j > position[1] and i > position[0]:
-                        for l in range(i+1, ROWS):
-                            for k in range(j+1, COLS):
-                                if (l, k) in moves:  
-                                    moves.remove((l, k)) 
+                        for l in range(i + 1, ROWS):
+                            for k in range(j + 1, COLS):
+                                if (l, k) in moves:
+                                    moves.remove((l, k))
 
         return moves
 

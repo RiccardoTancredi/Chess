@@ -1,12 +1,13 @@
 from dinamics.board import Board
 from dinamics.constants import WHITE, BLACK
 from dinamics.constants import ROWS, COLS
+from dinamics.pieces.king import King
 
 
 class Game:
     def __init__(self):
         self.board = Board()
-        self.turn = "WHITE"
+        self.turn = WHITE
 
     def move_piece(self, piece_pos, position, color):
         piece = self.board.get_piece(piece_pos)
@@ -15,7 +16,6 @@ class Game:
         # it's just a basic move, need improvements
         if position in moves:
             self.board.move(piece_pos, position, piece)
-        
 
     def move_piece_test(self, start, end, check=True):
         piece = self.board.get_piece(start)
@@ -38,10 +38,10 @@ class Game:
 
         moves = piece.get_movements_test()
         moves = self._add_moves_to_pos(piece, position, moves)
-        moves = self._trim_moves(moves)
+        moves = self._remove_outside_board(moves)
         moves = self._delete_moves(piece, self.board, position, moves)
         moves = self._eat_piece(piece, self.board, position, moves)
-        if piece.__class__.__name__ == "King":
+        if isinstance(piece, King):
             moves = self._castling(piece, self.board, position, moves)
         # vogliamo iterare le mosse e allo stesso tempo modificare la lista, quindi dobbiamo crearne un'altra con list(...)
         for move in list(moves):
@@ -74,7 +74,7 @@ class Game:
         return affine_moves
 
     # elimina le mosse che sono al di fuori della board
-    def _trim_moves(self, moves):
+    def _remove_outside_board(self, moves):
         trimmed = []
         for move in moves:
             if (0 <= move[0] < COLS) and (0 <= move[1] < ROWS):
@@ -86,14 +86,10 @@ class Game:
         return piece.delete_moves(board, position, moves)
 
     def _eat_piece(self, piece, board, position, moves):
-        return piece.eat_piece(board, position, moves) 
+        return piece.eat_piece(board, position, moves)
 
     def _castling(self, king, board, position, moves):
         return king.castling(board, position, moves)
 
     def change_turn(self):
-        if self.turn == "WHITE":
-            self.turn = "BLACK"
-        else:
-            self.turn = "WHITE"
-        # return turn
+        self.turn = BLACK if self.turn == WHITE else WHITE

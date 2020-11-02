@@ -1,6 +1,7 @@
 from dinamics.piece import Piece
 from dinamics.constants import ROWS, COLS
 
+
 class Knight(Piece):
     def __init__(self, color):
         super().__init__(color)
@@ -9,7 +10,7 @@ class Knight(Piece):
         pass
 
     def get_movements_test(self):
-        return [(1, 2), (2, 1), (-1, 2), (-2, 1),       # le 4 possibili L (se sono in (0,0))
+        return [(1, 2), (2, 1), (-1, 2), (-2, 1),
                 (-1, -2), (-2, -1), (1, -2), (2, -1)]
 
     def delete_moves(self, board, position, moves):

@@ -5,8 +5,6 @@ from .pieces.king import King
 from .pieces.knight import Knight
 from .pieces.pawn import Pawn
 from .constants import BLACK, WHITE, SQUARE_SIZE, ROWS, COLS, HEIGHT, WIDTH
-from .board import Board
-from .piece import Piece
 from .pieces.queen import Queen
 from .pieces.rook import Rook
 
@@ -75,17 +73,19 @@ class Draw:
                 # so we have to define first the piece class and all the pieces classes:
                 # pieces = King, Queen, Rook, Bishop, Knight, Pawn
 
-    def update(self, moves=[]):  # non puoi usare [] come default
+    def update(self, moves=None):
+        # default assignment doesn't work with []
+        if not moves:
+            moves = []
         self.draw()
         self.draw_valid_moves(moves)
         pygame.display.update()
 
     def draw_valid_moves(self, moves):
-        self.moves = moves
-        for move in self.moves:
+        for move in moves:
             row, col = move
             pygame.draw.circle(self.win, C_BLUE, (
-            col * SQUARE_SIZE + SQUARE_SIZE // 2, row * SQUARE_SIZE + SQUARE_SIZE // 2), 10)
+                col * SQUARE_SIZE + SQUARE_SIZE // 2, row * SQUARE_SIZE + SQUARE_SIZE // 2), 10)
 
     def draw(self):
         self.draw_squares()
