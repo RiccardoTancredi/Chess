@@ -2,12 +2,17 @@ from dinamics.board import Board
 from dinamics.constants import WHITE, BLACK
 from dinamics.constants import ROWS, COLS
 from dinamics.pieces.king import King
+from dinamics.pieces.pawn import Pawn 
+
 
 
 class Game:
     def __init__(self):
         self.board = Board()
         self.turn = WHITE
+        # self.white_turns = 0
+        # self.black_turns = 0
+
 
     def move_piece(self, start, end, check=True):
         piece = self.board.get_piece(start)
@@ -35,6 +40,8 @@ class Game:
         moves = self._eat_piece(piece, self.board, position, moves)
         if isinstance(piece, King):
             moves = self._castling(piece, self.board, position, moves)
+        if isinstance(piece, Pawn):
+            moves = self._en_passant(piece, self.board, position, moves)
         # vogliamo iterare le mosse e allo stesso tempo modificare la lista, quindi dobbiamo crearne un'altra con list(...)
         for move in list(moves):
             other = self.board.get_piece(move)
@@ -83,5 +90,10 @@ class Game:
     def _castling(self, king, board, position, moves):
         return king.castling(board, position, moves)
 
+    def _en_passant(self, pawn, board, position, moves):
+        return pawn.en_passant(board, position, moves)
+
     def change_turn(self):
         self.turn = BLACK if self.turn == WHITE else WHITE
+        # self.white_turns +=1
+        # self.black_turns +=1

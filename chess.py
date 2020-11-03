@@ -41,7 +41,7 @@ def main():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 raw_pos = pygame.mouse.get_pos()
                 pos = get_row_col_from_mouse(raw_pos)
-                print(pos)
+                # print(pos)
                 if selected and pos in moves:
                     if piece and piece.color == turn:
                         game.move_piece(selected, pos, check=False)

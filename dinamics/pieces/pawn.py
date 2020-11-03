@@ -22,6 +22,7 @@ class Pawn(Piece):
 
         return [(0, 1)]
 
+
         # possible_moves = []
         # if position[0] == 0 or position[0] == ROWS:
         #     # Promotion
@@ -65,3 +66,29 @@ class Pawn(Piece):
                 moves.append((position[0] + 1, position[1] - 1))
         return moves
 
+    def en_passant(self, board, position, moves):
+        the_pawn = board.get_piece(position)
+        if board.get_piece((position[0], position[1]-1)): # en passant of a pawn to the left
+            passant = board.get_piece((position[0], position[1]-1))
+            if len(passant.moves_history) == 1:
+                if passant.__class__.__name__ == "Pawn" and (passant.moves_history[0][0] == 3 or passant.moves_history[0][0] == 4): #these are the positions where the move can append
+                    if passant.color == "BLACK" and the_pawn.color != passant.color:
+                        moves.append((position[0]-1, position[1]-1))
+                    elif passant.color == "WHITE" and the_pawn.color != passant.color:
+                        moves.append((position[0]+1, position[1]-1))
+        if board.get_piece((position[0], position[1]+1)): # en passant of a pawn to the right
+            passant = board.get_piece((position[0], position[1]+1))
+            if len(passant.moves_history) == 1:
+                if passant.__class__.__name__ == "Pawn" and (passant.moves_history[0][0] == 3 or passant.moves_history[0][0] == 4): 
+                    if passant.color == "BLACK" and the_pawn.color != passant.color:
+                        moves.append((position[0]-1, position[1]+1))
+                    elif passant.color == "WHITE" and the_pawn.color != passant.color:
+                        moves.append((position[0]+1, position[1]+1))
+               
+        return moves
+
+
+    def promotion(self, position):
+        if self.color == "WHITE" and position[0] == 0:
+            pass
+        pass
