@@ -4,4 +4,3 @@ SQUARE_SIZE = WIDTH // COLS
 
 WHITE = "WHITE"
 BLACK = "BLACK"
-scale_factor = (int(WIDTH * 50 / 400), int(HEIGHT * 50 / 400))
