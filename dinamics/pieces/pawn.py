@@ -1,6 +1,9 @@
 from dinamics.piece import Piece
 from dinamics.constants import ROWS, COLS, WHITE, BLACK
-
+from .queen import Queen
+from .bishop import Bishop
+from .rook import Rook
+from .knight import Knight
 
 class Pawn(Piece):
     def __init__(self, color):
@@ -66,31 +69,39 @@ class Pawn(Piece):
                 moves.append((position[0] + 1, position[1] - 1))
         return moves
 
-    def en_passant(self, board, position, moves):
+    def en_passant(self, board, position, moves, notation):
         the_pawn = board.get_piece(position)
         if board.get_piece((position[0], position[1]-1)): # en passant of a pawn to the left
             passant = board.get_piece((position[0], position[1]-1))
-            if len(passant.moves_history) == 1:
-                if isinstance(passant, Pawn) and (passant.moves_history[0][0] == 3 or passant.moves_history[0][0] == 4): #these are the positions where the move can append
-                    if passant.color == BLACK and the_pawn.color != passant.color:
-                        moves.append((position[0]-1, position[1]-1))
-                    elif passant.color == WHITE and the_pawn.color != passant.color:
-                        moves.append((position[0]+1, position[1]-1))
+            if len(passant.moves_history) == 1 and notation[len(notation)-1][3] == passant.moves_history[0]:
+                if passant.color == BLACK and the_pawn.color != passant.color:
+                    moves.append((position[0]-1, position[1]-1))
+                elif passant.color == WHITE and the_pawn.color != passant.color:
+                    moves.append((position[0]+1, position[1]-1))
 
 
         if board.get_piece((position[0], position[1]+1)): # en passant of a pawn to the right
             passant = board.get_piece((position[0], position[1]+1))
-            if len(passant.moves_history) == 1:
-                if  isinstance(passant, Pawn) and (passant.moves_history[0][0] == 3 or passant.moves_history[0][0] == 4):
-                    if passant.color == BLACK and the_pawn.color != passant.color:
-                        moves.append((position[0]-1, position[1]+1))
-                    elif passant.color == WHITE and the_pawn.color != passant.color:
-                        moves.append((position[0]+1, position[1]+1))
+            if len(passant.moves_history) == 1 and notation[len(notation)-1][3] == passant.moves_history[0]:
+                if passant.color == BLACK and the_pawn.color != passant.color:
+                    moves.append((position[0]-1, position[1]+1))
+                elif passant.color == WHITE and the_pawn.color != passant.color:
+                    moves.append((position[0]+1, position[1]+1))
                
         return moves
 
 
-    def promotion(self, position):
-        if self.color == WHITE and position[0] == 0:
-            pass
-        pass
+    def promotion(self, board):
+        piece_name = input("What do you want your piece to become? \n")
+        if piece_name == "Queen":
+            self.__class__ = Queen(self.color).__class__
+        elif piece_name == "Rook":
+            self.__class__ = Rook(self.color).__class__
+        elif piece_name == "Bishop":
+            self.__class__ = Bishop(self.color).__class__
+        elif piece_name == "Knight":
+            self.__class__ = Knight(self.color).__class__
+        else:
+            print("Wrong possibility or name misspelled. Try again \n")
+            self.promotion(board)
+        # return self.__class__

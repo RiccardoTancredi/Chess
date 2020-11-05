@@ -10,9 +10,7 @@ class Game:
     def __init__(self):
         self.board = Board()
         self.turn = WHITE
-        # self.white_turns = 0
-        # self.black_turns = 0
-
+        self.notation = []
 
     def move_piece(self, start, end, check=True):
         piece = self.board.get_piece(start)
@@ -26,6 +24,7 @@ class Game:
 
         self.board.move(start, end, piece)
         piece.on_move(start, end)  # chiamiamo questo metodo una volta che modifichiamo un pezzo
+        self.update_notation(piece.color, piece.__class__.__name__, start, end)
         self.change_turn()
 
     def get_possible_moves(self, position):
@@ -41,7 +40,9 @@ class Game:
         if isinstance(piece, King):
             moves = self._castling(piece, self.board, position, moves)
         if isinstance(piece, Pawn):
-            moves = self._en_passant(piece, self.board, position, moves)
+            moves = self._en_passant(piece, self.board, position, moves, self.notation)
+        if isinstance(piece, Pawn) and (position[0] == 0 or position[0] == ROWS-1):
+            piece = self._promotion(piece, self.board)
         # vogliamo iterare le mosse e allo stesso tempo modificare la lista, quindi dobbiamo crearne un'altra con list(...)
         for move in list(moves):
             other = self.board.get_piece(move)
@@ -90,10 +91,14 @@ class Game:
     def _castling(self, king, board, position, moves):
         return king.castling(board, position, moves)
 
-    def _en_passant(self, pawn, board, position, moves):
-        return pawn.en_passant(board, position, moves)
+    def _en_passant(self, pawn, board, position, moves, notation):
+        return pawn.en_passant(board, position, moves, notation)
+
+    def _promotion(self, pawn, board):
+        return pawn.promotion(board)
 
     def change_turn(self):
         self.turn = BLACK if self.turn == WHITE else WHITE
-        # self.white_turns +=1
-        # self.black_turns +=1
+
+    def update_notation(self, color, name, start, end):
+        self.notation.append([color, name, start, end])
