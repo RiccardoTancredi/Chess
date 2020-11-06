@@ -95,6 +95,7 @@ class Pawn(Piece):
         piece_name = input("What do you want your piece to become? \n")
         if piece_name == "Queen":
             self.__class__ = Queen(self.color).__class__
+            # Pawn(Piece).__class__ = Queen(self.color).__class__ # in this case there is an error: this command does not copy the information about .color and .name
         elif piece_name == "Rook":
             self.__class__ = Rook(self.color).__class__
         elif piece_name == "Bishop":
