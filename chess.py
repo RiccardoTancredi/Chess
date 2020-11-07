@@ -30,9 +30,12 @@ def main():
     clock = pygame.time.Clock()
     selected = None
     moves = []
+
     while run:
         clock.tick(FPS)
         turn = game.turn
+
+        draw.update(moves, game.need_promotion)  # disegna il box della promozione se serve
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -40,30 +43,35 @@ def main():
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 raw_pos = pygame.mouse.get_pos()
-                pos = get_row_col_from_mouse(raw_pos)
-                # print(pos)
-                if selected and pos in moves:
-                    if piece and piece.color == turn:
-                        game.move_piece(selected, pos, check=False)
-                        selected = None
-                        moves = []
-                    else:
-                        print("This is not yout turn. Wait until the opponent has moved")
+
+                if game.need_promotion:
+                    # ritorna la classe di quello che il pedone diventerà (se il click è invalido non fa nulla)
+                    clss = draw.choose_promotion(raw_pos[0], raw_pos[1])
+                    if clss:
+                        game.promote(clss)
 
                 else:
-                    selected = pos
-                    moves = game.get_possible_moves(selected)
-                    piece = game.board.get_piece(selected)
-                    if piece and piece.color == turn:
-                        if piece:
-                            print(f"Selected {piece.__class__.__name__} in {pos}")
-                        if moves:
-                            draw.draw_valid_moves(moves)
-                    else:
-                        break
+                    pos = get_row_col_from_mouse(raw_pos)
+                    # print(pos)
+                    if selected and pos in moves:
+                        if piece and piece.color == turn:
+                            game.move_piece(selected, pos, check=False)
+                            selected = None
+                            moves = []
+                        else:
+                            print("This is not yout turn. Wait until the opponent has moved")
 
-        draw.draw()
-        draw.update(moves)
+                    else:
+                        selected = pos
+                        moves = game.get_possible_moves(selected)
+                        piece = game.board.get_piece(selected)
+                        if piece and piece.color == turn:
+                            if piece:
+                                print(f"Selected {piece.__class__.__name__} in {pos}")
+                            if moves:
+                                draw.draw_valid_moves(moves)
+                        else:
+                            break
 
     pygame.quit()
 

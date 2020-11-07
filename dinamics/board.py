@@ -89,3 +89,8 @@ class Board:
             self.board.append([])
             for j in range(COLS):
                 self.board[i].append(self._board_copy[i][j])
+
+    def replace(self, position, piece):
+        # todo copiare le info del vecchio nel nuovo tipo la cronologia delle mosse
+        row, col = position
+        self.board[row][col] = piece

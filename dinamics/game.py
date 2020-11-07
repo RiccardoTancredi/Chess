@@ -10,23 +10,29 @@ class Game:
         self.board = Board()
         self.turn = WHITE
         self.notation = []
+        self.need_promotion = None
 
     def move_piece(self, start, end, check=True):
+        if self.need_promotion:  # se c'è un pezzo da promuovere promuovilo prima di procedere
+            return
+
         piece = self.board.get_piece(start)
         if not piece:
             return
 
         if check:  # se vogliamo controllare che sia una mossa valida. potremo non volerlo quando usiamo la grafica
-            moves = piece.get_movements()  # todo
-            if end not in moves:
-                return
+            pass  # todo
 
         self.board.move(start, end, piece)
-        piece.on_move(start, end)  # chiamiamo questo metodo una volta che modifichiamo un pezzo
+        piece.on_move(start, end)
+
         self.update_notation(piece, start, end)
-        if isinstance(piece, Pawn) and (end[0] == 0 or end[0] == ROWS - 1):
-            piece = self._promotion(piece, self.board)
-        self.change_turn()
+
+        if isinstance(piece, Pawn) and self._is_at_the_end(end, piece):
+            self.need_promotion = end
+
+        if not self.need_promotion:  # Se c'è un pezzo da promuovere non cambiare il turno
+            self.change_turn()
 
     def get_possible_moves(self, position):
         piece = self.board.get_piece(position)
@@ -129,11 +135,27 @@ class Game:
     def _en_passant(self, pawn, board, position, moves, notation):
         return pawn.en_passant(board, position, moves, notation)
 
-    def _promotion(self, pawn, board):
-        return pawn.promotion(board)
+    def promote(self, clss):
+        # questo metodo viene chiamato solo con la classe con cui si vuole promuovere il pedone, tutto il resto già lo sa
+        piece = self.board.get_piece(self.need_promotion)
+        if not piece or not isinstance(piece, Pawn):
+            return
+
+        # dato che clss è una classe (tipo Rook) io posso fare clss(piece.color) allo stesso modo di come faccio Rook(piece.color)
+        new_piece = clss(piece.color)
+        self.board.replace(self.need_promotion, new_piece)  # Rimuoviamo il pedone e mettiamo il nuovo pezzo
+        self.change_turn()
+        self.need_promotion = None
 
     def change_turn(self):
         self.turn = BLACK if self.turn == WHITE else WHITE
 
     def update_notation(self, piece, start, end):
         self.notation.append([piece.color, piece.__class__.__name__, start, end])
+
+    def _is_at_the_end(self, position, piece):
+        if position[0] == 0 and piece.color == WHITE:
+            return True
+
+        elif position[0] == ROWS - 1 and piece.color == BLACK:
+            return True
