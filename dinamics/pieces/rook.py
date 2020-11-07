@@ -22,28 +22,24 @@ class Rook(Piece):
     def delete_moves(self, board, position, moves):
         for i in range(ROWS):
             for j in range(COLS):
-                if_black_piece = 0
                 piece = board.get_piece((i, j))
                 if piece and (i, j) in moves:
-                    if self.color != piece.color and self.color == "BLACK":
-                        if_black_piece = -1
-                    # if self.color == piece.color:
                     if i == position[0]:
                         if j > position[1]:
-                            for l in range(j - if_black_piece, COLS + 1):
+                            for l in range(j +1, COLS + 1):
                                 if (i, l) in moves:
                                     moves.remove((i, l))
                         elif j < position[1]:
-                            for l in range(0, j - if_black_piece):
+                            for l in range(0, j):
                                 if (i, l) in moves:
                                     moves.remove((i, l))
                     elif j == position[1]:
                         if i > position[0]:
-                            for k in range(i - if_black_piece, ROWS + 1):
+                            for k in range(i +1, ROWS + 1):
                                 if (k, j) in moves:
                                     moves.remove((k, j))
                         elif i < position[0]:
-                            for k in range(0, i - if_black_piece):
+                            for k in range(0, i):
                                 if (k, j) in moves:
                                     moves.remove((k, j))
 
