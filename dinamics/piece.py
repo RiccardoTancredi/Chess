@@ -11,11 +11,14 @@ class Piece:
     def on_move(self, start, end):
         self.moves_history.append(end)
 
-    def delete_moves(self, board, position, moves):
+    def edit_moves(self, board, position, moves):
         return moves
 
-    def add_moves(self, board, position, moves):
-        return moves
+    # def delete_moves(self, board, position, moves):
+    #     return moves
+    #
+    # def add_moves(self, board, position, moves):
+    #     return moves
 
     def under_check(self):
         # here we have to check if the king is under attack. How?

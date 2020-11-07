@@ -39,20 +39,14 @@ class Game:
         if not piece:
             return []
 
-        moves = piece.get_movements()
-        moves = self._add_moves_to_pos(piece, position, moves)
-        moves = self._remove_outside_board(moves)
-        moves = self._delete_moves(piece, self.board, position, moves)
-        moves = self._add_moves(piece, self.board, position, moves)
-
+        moves = self._get_correct_moves(piece, position)
         moves = self._remove_fixed_moves(position, piece, moves)
 
-        # todo fare un metodo edit_moves e mettere lì tutta la logica della modifica delle mosse (che sostituirà castling/en_passant/delete_moves/add_moves
-        if isinstance(piece, King):
-            moves = self._castling(piece, self.board, position, moves)
+        # if isinstance(piece, King):
+        #     moves = self._castling(piece, self.board, position, moves)
         if isinstance(piece, Pawn):
             moves = self._en_passant(piece, self.board, position, moves, self.notation)
-        # vogliamo iterare le mosse e allo stesso tempo modificare la lista, quindi dobbiamo crearne un'altra con list(...)
+
         for move in list(moves):
             other = self.board.get_piece(move)
             if not other:
@@ -60,6 +54,13 @@ class Game:
 
             if other.color == piece.color:
                 moves.remove(move)
+        return moves
+
+    def _get_correct_moves(self, piece, position):
+        moves = piece.get_movements()
+        moves = self._add_moves_to_pos(piece, position, moves)
+        moves = self._remove_outside_board(moves)
+        moves = piece.edit_moves(self.board, position, moves)
         return moves
 
     def _add_moves_to_pos(self, piece, position, moves):
@@ -108,13 +109,10 @@ class Game:
             for (j, k), opiece in self.board.get_pieces(valid=True):  # per ogni pezzo della board
                 if opiece.color == piece.color:
                     continue
-                # per ogni casella nemica
-                # adesso calcoliamo tutti i movimenti che quella pedina nemica può fare supponendo che io abbia fatto quella mossa
-                omoves = opiece.get_movements()
-                omoves = self._add_moves_to_pos(opiece, (j, k), omoves)
-                omoves = self._remove_outside_board(omoves)
-                omoves = self._delete_moves(opiece, self.board, (j, k), omoves)
-                omoves = self._add_moves(opiece, self.board, (j, k), omoves)
+
+                # per ogni casella nemica calcoliamo tutti i movimenti che quella potrebbe fare supponendo che io
+                # abbia fatto quella mossa
+                omoves = self._get_correct_moves(opiece, (j, k))
 
                 # se fra le mosse che può fare c'è quella di catturare il re, allora la mossa non si può fare
                 if king_pos in omoves:
@@ -129,19 +127,21 @@ class Game:
     def _add_moves(self, piece, board, position, moves):
         return piece.add_moves(board, position, moves)
 
-    def _castling(self, king, board, position, moves):
-        return king.castling(board, position, moves)
+    # def _castling(self, king, board, position, moves):
+    #     return king.castling(board, position, moves)
 
     def _en_passant(self, pawn, board, position, moves, notation):
         return pawn.en_passant(board, position, moves, notation)
 
     def promote(self, clss):
-        # questo metodo viene chiamato solo con la classe con cui si vuole promuovere il pedone, tutto il resto già lo sa
+        # questo metodo viene chiamato solo con la classe con cui si vuole promuovere il pedone,
+        # tutto il resto già lo sa
         piece = self.board.get_piece(self.need_promotion)
         if not piece or not isinstance(piece, Pawn):
             return
 
-        # dato che clss è una classe (tipo Rook) io posso fare clss(piece.color) allo stesso modo di come faccio Rook(piece.color)
+        # dato che clss è una classe (tipo Rook) io posso fare clss(piece.color) allo stesso modo di
+        # come faccio Rook(piece.color)
         new_piece = clss(piece.color)
         self.board.replace(self.need_promotion, new_piece)  # Rimuoviamo il pedone e mettiamo il nuovo pezzo
         self.change_turn()

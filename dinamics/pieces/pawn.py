@@ -16,7 +16,7 @@ class Pawn(Piece):
 
         return [(0, 1)]
 
-    def delete_moves(self, board, position, moves):
+    def edit_moves(self, board, position, moves):
         for i in range(ROWS):
             for j in range(COLS):
                 if self.color == WHITE:
@@ -31,9 +31,7 @@ class Pawn(Piece):
                             for col in range(position[0]+column, ROWS):
                                 if (col, position[1]) in moves:
                                     moves.remove((col, position[1]))
-        return moves
 
-    def add_moves(self, board, position, moves):
         if self.color == WHITE:
             # if position[0] - 1 >= 0 and position[1] - 1 >= 0 and position[1] + 1 <= COLS-1:
             if board.get_piece((position[0] - 1, position[1] - 1)):
@@ -52,7 +50,7 @@ class Pawn(Piece):
         the_pawn = board.get_piece(position)
         if board.get_piece((position[0], position[1]-1)): # en passant of a pawn to the left
             passant = board.get_piece((position[0], position[1]-1))
-            if len(passant.moves_history) == 1 and notation[len(notation)-1][3] == passant.moves_history[0]:
+            if len(passant.moves_history) == 1 and notation[-1][3] == passant.moves_history[0]:
                 if passant.color == BLACK and the_pawn.color != passant.color:
                     moves.append((position[0]-1, position[1]-1))
                 elif passant.color == WHITE and the_pawn.color != passant.color:

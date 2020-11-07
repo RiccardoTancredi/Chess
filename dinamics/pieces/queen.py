@@ -12,8 +12,8 @@ class Queen(Rook, Bishop):
         queen_moves = list(set(bishop_moves).union(set(rook_moves)))  # remove duplicate
         return queen_moves
 
-    def delete_moves(self, board, position, moves):
-        rook_moves = Rook.delete_moves(self, board, position, moves)
-        bishop_moves = Bishop.delete_moves(self, board, position, moves)
+    def edit_moves(self, board, position, moves):
+        rook_moves = Rook.edit_moves(self, board, position, moves)
+        bishop_moves = Bishop.edit_moves(self, board, position, moves)
         queen_moves = list(set(bishop_moves).union(set(rook_moves)))  # remove duplicate
         return queen_moves

@@ -6,12 +6,11 @@ class Knight(Piece):
     def __init__(self, color):
         super().__init__(color)
 
-
     def get_movements(self):
         return [(1, 2), (2, 1), (-1, 2), (-2, 1),
                 (-1, -2), (-2, -1), (1, -2), (2, -1)]
 
-    def delete_moves(self, board, position, moves):
+    def edit_moves(self, board, position, moves):
         for i in range(ROWS):
             for j in range(COLS):
                 piece = board.get_piece((i, j))
