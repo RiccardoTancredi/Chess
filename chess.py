@@ -63,11 +63,11 @@ def main():
                         break
 
         draw.draw()
-        draw.update(moves)    
-         
+        draw.update(moves)
+
     pygame.quit()
 
-     
+
 main()
 
 print(game.notation)

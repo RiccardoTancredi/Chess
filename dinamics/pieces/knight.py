@@ -18,6 +18,3 @@ class Knight(Piece):
                 if piece and piece.color == self.color and (i, j) in moves:
                     moves.remove((i, j))
         return moves
-
-    def add_moves(self, board, position, moves):
-        return moves

@@ -11,7 +11,7 @@ from .pieces.rook import Rook
 class Board:
     def __init__(self):
         self.board = []
-
+        self._board_copy = []
         self._create_board()
 
     def _create_board(self):
@@ -43,6 +43,19 @@ class Board:
         else:
             pass
 
+    # al posto di fare i doppi for sulle righe e colonne, si può usare questo (se valid=True ritorna solo pezzi non None)
+    def get_pieces(self, valid=False):
+        pieces = []
+        for i in range(ROWS):
+            for j in range(COLS):
+                piece = self.get_piece((i, j))
+                if not piece and valid:
+                    continue
+
+                value = ((i, j), piece)
+                pieces.append(value)
+        return pieces
+
     def move(self, start_pos, end_pos, piece):
         srow, scol = start_pos
         erow, ecol = end_pos
@@ -62,3 +75,17 @@ class Board:
 
         self.board[erow][ecol] = self.board[srow][scol]
         self.board[srow][scol] = None
+
+    def save_board(self):
+        self._board_copy = []
+        for i in range(ROWS):
+            self._board_copy.append([])
+            for j in range(COLS):
+                self._board_copy[i].append(self.get_piece((i, j)))
+
+    def rollback_board(self):
+        self.board = []
+        for i in range(ROWS):
+            self.board.append([])
+            for j in range(COLS):
+                self.board[i].append(self._board_copy[i][j])

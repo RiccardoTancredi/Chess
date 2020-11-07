@@ -48,6 +48,3 @@ class Rook(Piece):
                                     moves.remove((k, j))
 
         return moves
-
-    def add_moves(self, board, position, moves):
-        return moves

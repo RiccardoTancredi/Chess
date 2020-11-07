@@ -41,5 +41,3 @@ class Bishop(Piece):
 
         return moves
 
-    def add_moves(self, board, position, moves):
-        return moves

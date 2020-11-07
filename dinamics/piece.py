@@ -12,10 +12,10 @@ class Piece:
         self.moves_history.append(end)
 
     def delete_moves(self, board, position, moves):
-        raise NotImplementedError
+        return moves
 
     def add_moves(self, board, position, moves):
-        pass
+        return moves
 
     def under_check(self):
         # here we have to check if the king is under attack. How?

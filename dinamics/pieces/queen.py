@@ -20,6 +20,3 @@ class Queen(Rook, Bishop):
         bishop_moves = Bishop.delete_moves(self, board, position, moves)
         queen_moves = rook_moves + bishop_moves
         return queen_moves
-
-    def add_moves(self, board, position, moves):
-        return moves
