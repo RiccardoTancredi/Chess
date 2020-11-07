@@ -79,7 +79,7 @@ class Draw:
         y_margin = (height - SQUARE_SIZE) / 2
         spacing = 30
         x_margin = (WIDTH - SQUARE_SIZE * 4 - spacing * 3) / 2
-        for count, clss in enumerate([Queen, Knight, Rook, Bishop]):
+        for count, clss in enumerate([Queen, Rook, Bishop, Knight]):
             x = x_margin + count * (SQUARE_SIZE + spacing)
             image_rect = self.draw_piece(clss, color, x, starty + y_margin)
             self.prom_rects[clss] = image_rect
