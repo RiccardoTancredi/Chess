@@ -3,11 +3,9 @@
 .vs
 .idea
 venv/
-dinamics/__pycache__/piece.cpython-38.pyc
-dinamics/__pycache__/piece.cpython-38.pyc
-dinamics/__pycache__/constants.cpython-38.pyc
 dinamics/__pycache__/__init__.cpython-38.pyc
+dinamics/__pycache__/board.cpython-38.pyc
 dinamics/__pycache__/constants.cpython-38.pyc
-dinamics/__pycache__/piece.cpython-38.pyc
-dinamics/__pycache__/piece.cpython-38.pyc
+dinamics/__pycache__/draw.cpython-38.pyc
+dinamics/__pycache__/game.cpython-38.pyc
 dinamics/__pycache__/piece.cpython-38.pyc

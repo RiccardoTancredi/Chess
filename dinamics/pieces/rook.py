@@ -5,12 +5,7 @@ from dinamics.constants import ROWS, COLS
 class Rook(Piece):
     def __init__(self, color):
         super().__init__(color)
-        self.first_move = True
-
-    def first_rook_move(self):
-        if self.first_move:
-            self.first_move = False
-
+    
     def get_movements(self):
         basic_moves = []
         for j in range(-COLS + 1, COLS):

@@ -11,13 +11,11 @@ class King(Piece):
 
     def edit_moves(self, board, position, moves):
         # castling logic
-        first_move = len(self.moves_history) == 0
-        if first_move and Rook.first_rook_move:  # todo <- this is problematic
+        if not self.moves_history:  # todo <- this is problematic
             row, col = position  # king position
-            if not board.get_piece((row, col + 1)) and not board.get_piece((row, col + 2)):
+            if not board.get_piece((row, col + 1)) and not board.get_piece((row, col + 2)) and board.get_piece((row, col + 3)) and not board.get_piece((row, col + 3)).moves_history:
                 moves.append((row, col + 2))
-            if not board.get_piece((row, col - 1)) and not board.get_piece((row, col - 2)) and not board.get_piece(
-                    (row, col - 3)):
+            if not board.get_piece((row, col - 1)) and not board.get_piece((row, col - 2)) and not board.get_piece((row, col - 3)) and board.get_piece((row, col - 4)) and not board.get_piece((row, col - 4)).moves_history:
                 moves.append((row, col - 2))
 
         return moves
