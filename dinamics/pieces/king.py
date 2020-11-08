@@ -1,5 +1,4 @@
 from dinamics.piece import Piece
-from dinamics.pieces.rook import Rook
 
 
 class King(Piece):
