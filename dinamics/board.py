@@ -43,7 +43,6 @@ class Board:
         else:
             pass
 
-    # al posto di fare i doppi for sulle righe e colonne, si può usare questo (se valid=True ritorna solo pezzi non None)
     def get_pieces(self, valid=False):
         pieces = []
         for i in range(ROWS):
@@ -61,9 +60,11 @@ class Board:
         erow, ecol = end_pos
         if isinstance(piece, King) and abs(ecol - scol) == 2:
             if ecol - scol > 0:  # the king is doing the short castling
-                self.board[srow][scol + 1], self.board[srow][ROWS - 1] = self.board[srow][ROWS - 1], None
+                self.board[srow][scol + 1] = self.board[srow][ROWS - 1]
+                self.board[srow][ROWS - 1] = None
             if ecol - scol < 0:  # long castling
-                self.board[srow][scol - 1], self.board[srow][0] = self.board[srow][0], None
+                self.board[srow][scol - 1] = self.board[srow][0]
+                self.board[srow][0] = None
 
         elif isinstance(piece, Pawn):
             if not self.get_piece(end_pos) and abs(ecol - scol) == 1:  # this means that the pawn is moving diagonally
