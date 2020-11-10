@@ -133,7 +133,7 @@ class Game:
                     break
 
                 # se non sono il re e fra le mosse che può fare c'è quella di catturare il re, allora la mossa non si può fare
-                elif king_pos in omoves:
+                elif not is_king and king_pos in omoves:
                     moves.remove(move)
                     break
             self.board.rollback_board()  # rimettiamo la board com'era prima della mossa
