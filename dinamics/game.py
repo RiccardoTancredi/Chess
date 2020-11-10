@@ -40,7 +40,7 @@ class Game:
             return []
 
         moves = self._get_correct_moves(piece, position)
-        moves = self._remove_fixed_moves(position, piece, moves)
+        moves = self._remove_pinned_moves(position, piece, moves)
 
         # if isinstance(piece, King):
         #     moves = self._castling(piece, self.board, position, moves)
@@ -70,10 +70,13 @@ class Game:
 
         moves_translated = []
         for move in moves:
-            move_t = (move[1], move[0])
             if piece.color == WHITE:
                 move_t = (-move[1], move[0])
+            else:
+                move_t = (move[1], move[0])
+
             moves_translated.append(move_t)
+
         moves = moves_translated
 
         affine_moves = []
@@ -92,30 +95,45 @@ class Game:
 
         return trimmed
 
-    def _remove_fixed_moves(self, position, piece, moves):
+    def _remove_pinned_moves(self, position, piece, moves):
+
         king_pos = None
-        # cerchiamo il re
-        for (j, k), opiece in self.board.get_pieces(valid=True):
-            if opiece.color != piece.color:
-                continue
-            if isinstance(opiece, King):
-                king_pos = (j, k)
-                break
+        is_king = False
+        # se la pedina cliccata è il re
+        if isinstance(piece, King):
+            king_pos = position
+            is_king = True
+
+        else:
+            # cerchiamo il re
+            for (j, k), opiece in self.board.get_pieces(valid=True):
+                if opiece.color != piece.color:
+                    continue
+                if isinstance(opiece, King):
+                    king_pos = (j, k)
+                    break
 
         # per ogni mossa del pezzo che voglio muovere
         for move in list(moves):
             self.board.save_board()  # salviamo la board come è
-            self.board.move(position, move, piece)  # moviamo il pezzo secondo una delle mosse possibili
+            # moviamo il pezzo secondo una delle mosse possibili
+            # nel move c'è della logica che potrebbe dar problemi
+            self.board.move(position, move, piece)
             for (j, k), opiece in self.board.get_pieces(valid=True):  # per ogni pezzo della board
-                if opiece.color == piece.color:
+                if opiece.color == piece.color:  # se è un alleato saltiamo
                     continue
 
-                # per ogni casella nemica calcoliamo tutti i movimenti che quella potrebbe fare supponendo che io
-                # abbia fatto quella mossa
+                # per ogni casella nemica calcoliamo tutti i movimenti che quella potrebbe fare
+                # supponendo che io abbia fatto quella mossa
                 omoves = self._get_correct_moves(opiece, (j, k))
 
-                # se fra le mosse che può fare c'è quella di catturare il re, allora la mossa non si può fare
-                if king_pos in omoves:
+                # Se la pedina cliccata è il re e se la pedina nemica mi cattura, togliamo la mossa
+                if is_king and move in omoves:
+                    moves.remove(move)
+                    break
+
+                # se non sono il re e fra le mosse che può fare c'è quella di catturare il re, allora la mossa non si può fare
+                elif king_pos in omoves:
                     moves.remove(move)
                     break
             self.board.rollback_board()  # rimettiamo la board com'era prima della mossa
@@ -143,7 +161,8 @@ class Game:
         # dato che clss è una classe (tipo Rook) io posso fare clss(piece.color) allo stesso modo di
         # come faccio Rook(piece.color)
         new_piece = clss(piece.color)
-        self.board.replace(self.need_promotion, new_piece)  # Rimuoviamo il pedone e mettiamo il nuovo pezzo
+        self.board.replace(self.need_promotion,
+                           new_piece)  # Rimuoviamo il pedone e mettiamo il nuovo pezzo
         self.change_turn()
         self.need_promotion = None
 
