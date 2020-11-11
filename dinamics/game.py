@@ -113,6 +113,10 @@ class Game:
                     king_pos = (j, k)
                     break
 
+        # remove castling moves if necessary
+        r_castling = (king_pos[0], king_pos[1]+2)
+        l_castling = (king_pos[0], king_pos[1]-2)
+
         # per ogni mossa del pezzo che voglio muovere
         for move in list(moves):
             self.board.save_board()  # salviamo la board come è
@@ -129,13 +133,21 @@ class Game:
 
                 # Se la pedina cliccata è il re e se la pedina nemica mi cattura, togliamo la mossa
                 if is_king and move in omoves:
-                    moves.remove(move)
+                    if move in moves:
+                        moves.remove(move)
+                    # if one of the castling squares is under attack it can't castle
+                    if move[1] > king_pos[1] and  r_castling in moves:
+                        moves.remove(r_castling)
+                    if move[1] < king_pos[1] and l_castling in moves:
+                        moves.remove(l_castling)   
+                    # if the king is under check it can't castle
+                        #ToDo:
                     break
 
-                # se non sono il re e fra le mosse che può fare c'è quella di catturare il re, allora la mossa non si può fare
+                # se non sono il re e fra le mosse che può fare c'è quella di catturare il re, allora la mossa non si può fare               
                 elif not is_king and king_pos in omoves:
-                    moves.remove(move)
-                    break
+                    moves.remove(move)       
+                    break 
             self.board.rollback_board()  # rimettiamo la board com'era prima della mossa
         return moves
 
