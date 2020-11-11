@@ -139,15 +139,20 @@ class Game:
                     if move[1] > king_pos[1] and  r_castling in moves:
                         moves.remove(r_castling)
                     if move[1] < king_pos[1] and l_castling in moves:
-                        moves.remove(l_castling)   
-                    # if the king is under check it can't castle
-                        #ToDo:
-                    break
+                        moves.remove(l_castling) 
+                    # break
 
                 # se non sono il re e fra le mosse che può fare c'è quella di catturare il re, allora la mossa non si può fare               
                 elif not is_king and king_pos in omoves:
                     moves.remove(move)       
-                    break 
+                    # break 
+                # if the king is under check it can't castle
+                if is_king and king_pos in omoves:
+                    if r_castling in moves:
+                        moves.remove(r_castling)
+                if is_king and king_pos in omoves:
+                    if l_castling in moves:
+                        moves.remove(l_castling)
             self.board.rollback_board()  # rimettiamo la board com'era prima della mossa
         return moves
 
