@@ -124,7 +124,7 @@ class Game:
             # nel move c'è della logica che potrebbe dar problemi
             self.board.move(position, move, piece)
             for (j, k), opiece in self.board.get_pieces(valid=True):  # per ogni pezzo della board
-                if opiece.color == piece.color:  # se è un alleato saltiamo
+                if opiece.color == piece.color or (isinstance(opiece, King) and opiece.color == piece.color):  # se è un alleato saltiamo
                     continue
 
                 # per ogni casella nemica calcoliamo tutti i movimenti che quella potrebbe fare
@@ -132,27 +132,27 @@ class Game:
                 omoves = self._get_correct_moves(opiece, (j, k))
 
                 # Se la pedina cliccata è il re e se la pedina nemica mi cattura, togliamo la mossa
-                if is_king and move in omoves:
-                    if move in moves:
-                        moves.remove(move)
-                    # if one of the castling squares is under attack it can't castle
-                    if move[1] > king_pos[1] and  r_castling in moves:
-                        moves.remove(r_castling)
-                    if move[1] < king_pos[1] and l_castling in moves:
-                        moves.remove(l_castling) 
-                    # break
+                if is_king:
+                    if move in omoves:
+                        if move in moves:
+                            moves.remove(move)
+                    # if one of the castling squares is under attack the king can't castle
+                    if (r_castling[0], r_castling[1]-1) in omoves:
+                        if r_castling in moves:
+                            moves.remove(r_castling)
+                    if (l_castling[0], l_castling[1]+1) in omoves:
+                        if l_castling in moves:
+                            moves.remove(l_castling)
+                    if king_pos in omoves: # check
+                        if r_castling in moves:
+                            moves.remove(r_castling)
+                        if l_castling in moves:
+                            moves.remove(l_castling)
 
                 # se non sono il re e fra le mosse che può fare c'è quella di catturare il re, allora la mossa non si può fare               
                 elif not is_king and king_pos in omoves:
                     moves.remove(move)       
                     # break 
-                # if the king is under check it can't castle
-                if is_king and king_pos in omoves:
-                    if r_castling in moves:
-                        moves.remove(r_castling)
-                if is_king and king_pos in omoves:
-                    if l_castling in moves:
-                        moves.remove(l_castling)
             self.board.rollback_board()  # rimettiamo la board com'era prima della mossa
         return moves
 
