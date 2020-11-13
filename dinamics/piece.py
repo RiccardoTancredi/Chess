@@ -1,3 +1,6 @@
+from dinamics.constants import BLACK
+
+
 class Piece:
 
     def __init__(self, color):
@@ -39,3 +42,9 @@ class Piece:
         # Furthermore, in game.py, we want the oppont to do something (eating the piece, moving the king...) in order to not do an irregular move.
 
         pass
+
+    def __repr__(self) -> str:
+        color = "black" if self.color == BLACK else "white"
+        return f"<{self.__class__.__name__} {color}>"
+
+

@@ -6,8 +6,12 @@ from dinamics.pieces.pawn import Pawn
 
 
 class Game:
-    def __init__(self):
-        self.board = Board()
+    def __init__(self, board=None):
+        if board:
+            self.board = board
+        else:
+            self.board = Board()
+
         self.turn = WHITE
         self.notation = []
         self.need_promotion = None
@@ -114,8 +118,8 @@ class Game:
                     break
 
         # remove castling moves if necessary
-        r_castling = (king_pos[0], king_pos[1]+2)
-        l_castling = (king_pos[0], king_pos[1]-2)
+        r_castling = (king_pos[0], king_pos[1] + 2)
+        l_castling = (king_pos[0], king_pos[1] - 2)
 
         # per ogni mossa del pezzo che voglio muovere
         for move in list(moves):
@@ -124,7 +128,8 @@ class Game:
             # nel move c'è della logica che potrebbe dar problemi
             self.board.move(position, move, piece)
             for (j, k), opiece in self.board.get_pieces(valid=True):  # per ogni pezzo della board
-                if opiece.color == piece.color or (isinstance(opiece, King) and opiece.color == piece.color):  # se è un alleato saltiamo
+                # se è un alleato saltiamo
+                if opiece.color == piece.color or (isinstance(opiece, King) and opiece.color == piece.color):
                     continue
 
                 # per ogni casella nemica calcoliamo tutti i movimenti che quella potrebbe fare
@@ -137,13 +142,13 @@ class Game:
                         if move in moves:
                             moves.remove(move)
                     # if one of the castling squares is under attack the king can't castle
-                    if (r_castling[0], r_castling[1]-1) in omoves:
+                    if (r_castling[0], r_castling[1] - 1) in omoves:
                         if r_castling in moves:
                             moves.remove(r_castling)
-                    if (l_castling[0], l_castling[1]+1) in omoves:
+                    if (l_castling[0], l_castling[1] + 1) in omoves:
                         if l_castling in moves:
                             moves.remove(l_castling)
-                    if king_pos in omoves: # check
+                    if king_pos in omoves:  # check
                         if r_castling in moves:
                             moves.remove(r_castling)
                         if l_castling in moves:
@@ -151,7 +156,7 @@ class Game:
 
                 # se non sono il re e fra le mosse che può fare c'è quella di catturare il re, allora la mossa non si può fare               
                 elif not is_king and king_pos in omoves:
-                    moves.remove(move)       
+                    moves.remove(move)
                     # break 
             self.board.rollback_board()  # rimettiamo la board com'era prima della mossa
         return moves
@@ -178,8 +183,8 @@ class Game:
         # dato che clss è una classe (tipo Rook) io posso fare clss(piece.color) allo stesso modo di
         # come faccio Rook(piece.color)
         new_piece = clss(piece.color)
-        self.board.replace(self.need_promotion,
-                           new_piece)  # Rimuoviamo il pedone e mettiamo il nuovo pezzo
+        # Rimuoviamo il pedone e mettiamo il nuovo pezzo
+        self.board.put(self.need_promotion, new_piece)
         self.change_turn()
         self.need_promotion = None
 
