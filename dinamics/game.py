@@ -51,6 +51,14 @@ class Game:
         if isinstance(piece, Pawn):
             moves = self._en_passant(piece, self.board, position, moves, self.notation)
 
+        return moves
+
+    def _get_correct_moves(self, piece, position):
+        moves = piece.get_movements()
+        moves = self._add_moves_to_pos(piece, position, moves)
+        moves = self._remove_outside_board(moves)
+
+        # rimuoviamo le mosse che finirebbero su caselle alleate
         for move in list(moves):
             other = self.board.get_piece(move)
             if not other:
@@ -58,12 +66,7 @@ class Game:
 
             if other.color == piece.color:
                 moves.remove(move)
-        return moves
 
-    def _get_correct_moves(self, piece, position):
-        moves = piece.get_movements()
-        moves = self._add_moves_to_pos(piece, position, moves)
-        moves = self._remove_outside_board(moves)
         moves = piece.edit_moves(self.board, position, moves)
         return moves
 
@@ -129,7 +132,7 @@ class Game:
             self.board.move(position, move, piece)
             for (j, k), opiece in self.board.get_pieces(valid=True):  # per ogni pezzo della board
                 # se è un alleato saltiamo
-                if opiece.color == piece.color or (isinstance(opiece, King) and opiece.color == piece.color):
+                if opiece.color == piece.color:
                     continue
 
                 # per ogni casella nemica calcoliamo tutti i movimenti che quella potrebbe fare
