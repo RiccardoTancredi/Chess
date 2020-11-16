@@ -9,6 +9,7 @@ from .pieces.pawn import Pawn
 from .constants import BLACK, WHITE, SQUARE_SIZE, ROWS, COLS, HEIGHT, WIDTH
 from .pieces.queen import Queen
 from .pieces.rook import Rook
+from .pieces.dragon import Dragon
 
 C_BLACK = (0, 0, 0)
 C_WHITE = (255, 255, 255)
@@ -19,7 +20,7 @@ class Draw:
     def __init__(self, win, game, assets_dir):
         self.win = win
         self.board = game.board
-        self.scale_factor = (int(WIDTH * 50 / 400), int(HEIGHT * 50 / 400))
+        self.scale_factor = (int(WIDTH * 40 / 400), int(HEIGHT * 40 / 400))
 
         self.white_pieces = {
             Pawn: scale(pygame.image.load(f'{assets_dir}/white_pawn.png'), self.scale_factor),
@@ -27,7 +28,8 @@ class Draw:
             King: scale(pygame.image.load(f'{assets_dir}/white_king.png'), self.scale_factor),
             Queen: scale(pygame.image.load(f'{assets_dir}/white_queen.png'), self.scale_factor),
             Rook: scale(pygame.image.load(f'{assets_dir}/white_rook.png'), self.scale_factor),
-            Bishop: scale(pygame.image.load(f'{assets_dir}/white_bishop.png'), self.scale_factor)
+            Bishop: scale(pygame.image.load(f'{assets_dir}/white_bishop.png'), self.scale_factor),
+            Dragon: scale(pygame.image.load(f'{assets_dir}/white_dragon.png'), self.scale_factor)
         }
         self.black_pieces = {
             Pawn: scale(pygame.image.load(f'{assets_dir}/black_pawn.png'), self.scale_factor),
@@ -35,7 +37,8 @@ class Draw:
             King: scale(pygame.image.load(f'{assets_dir}/black_king.png'), self.scale_factor),
             Queen: scale(pygame.image.load(f'{assets_dir}/black_queen.png'), self.scale_factor),
             Rook: scale(pygame.image.load(f'{assets_dir}/black_rook.png'), self.scale_factor),
-            Bishop: scale(pygame.image.load(f'{assets_dir}/black_bishop.png'), self.scale_factor)
+            Bishop: scale(pygame.image.load(f'{assets_dir}/black_bishop.png'), self.scale_factor),
+            Dragon: scale(pygame.image.load(f'{assets_dir}/black_dragon.png'), self.scale_factor)
         }
 
         self.prom_rects = {}

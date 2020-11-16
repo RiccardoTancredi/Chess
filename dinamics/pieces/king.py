@@ -14,14 +14,14 @@ class King(Piece):
             row, col = position  # king position
             if not board.get_piece((row, col + 1)) and not board.get_piece((row, col + 2)):
 
-                r_rook = board.get_piece((row, col + 3))
+                r_rook = board.get_piece((row, col + 4))
                 if r_rook and not r_rook.moves_history:
-                    moves.append((row, col + 2))
+                    moves.append((row, col + 3))
 
             if not board.get_piece((row, col - 1)) and not board.get_piece((row, col - 2)) and not board.get_piece((row, col - 3)):
 
-                l_rook = board.get_piece((row, col - 4))
+                l_rook = board.get_piece((row, col - 5))
                 if l_rook and not l_rook.moves_history:
-                    moves.append((row, col - 2))
+                    moves.append((row, col - 3))
 
         return moves
