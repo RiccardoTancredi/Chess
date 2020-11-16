@@ -117,6 +117,9 @@ class Game:
                     king_pos = (j, k)
                     break
 
+        if not king_pos:  # per i test
+            return moves
+
         # remove castling moves if necessary
         r_castling = (king_pos[0], king_pos[1] + 2)
         l_castling = (king_pos[0], king_pos[1] - 2)
