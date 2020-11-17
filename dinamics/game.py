@@ -1,4 +1,4 @@
-from dinamics.board import Board
+from dinamics.board import Board, ChessBoard
 from dinamics.constants import WHITE, BLACK
 from dinamics.constants import ROWS, COLS
 from dinamics.pieces.king import King
@@ -10,11 +10,18 @@ class Game:
         if board:
             self.board = board
         else:
-            self.board = Board()
+            self.board = ChessBoard()
 
         self.turn = WHITE
         self.notation = []
         self.need_promotion = None
+        self._player_moves = {}
+
+        self.initialize()
+
+    def initialize(self):
+        self._player_moves[WHITE] = self._get_all_player_moves(WHITE)
+        self._player_moves[BLACK] = self._get_all_player_moves(BLACK)
 
     def get_possible_moves(self, position):
         piece = self.board.get_piece(position)
@@ -23,9 +30,6 @@ class Game:
 
         moves = self._get_correct_moves(piece, position)
         moves = self._remove_pinned_moves(position, piece, moves)
-
-        if isinstance(piece, Pawn):
-            moves = piece.en_passant(self.board, position, moves, self.notation)
 
         return moves
 
@@ -49,7 +53,11 @@ class Game:
             self.need_promotion = end
 
         if not self.need_promotion:  # Se c'è un pezzo da promuovere non cambiare il turno
-            self.change_turn()
+            self.end_turn()
+
+    def end_turn(self):
+        self._player_moves[self.turn] = self._get_all_player_moves(self.turn)
+        self.change_turn()
 
     def _get_correct_moves(self, piece, position):
         moves = piece.get_movements()
@@ -57,6 +65,10 @@ class Game:
         moves = self._remove_outside_board(moves)
         moves = self._remove_allies_moves(piece, moves)
         moves = piece.edit_moves(self.board, position, moves)
+
+        if isinstance(piece, Pawn):
+            moves = piece.en_passant(self.board, position, moves, self.notation)
+
         moves = self._remove_allies_moves(piece, moves)
         return moves
 
@@ -100,28 +112,36 @@ class Game:
         return moves
 
     def _remove_pinned_moves(self, position, piece, moves):
-        king_pos = None
-        is_king = False
         # se la pedina cliccata è il re
         if isinstance(piece, King):
-            king_pos = position
-            is_king = True
+            opposite = self._get_other_player(piece.color)
+            enemy_moves = self._player_moves[opposite]
+            for move in list(moves):
+                if move in enemy_moves:
+                    moves.remove(move)
 
-        else:
-            # cerchiamo il re
-            for (j, k), opiece in self.board.get_pieces(valid=True):
-                if opiece.color != piece.color:
-                    continue
-                if isinstance(opiece, King):
-                    king_pos = (j, k)
-                    break
+            for (j, k) in list(moves):
+                if k - position[1] == -2:
+                    if (j, k + 1) not in moves or (j, k - 1) in enemy_moves:
+                        moves.remove((j, k))
+
+                elif k - position[1] == 2:
+                    if (j, k - 1) not in moves or (j, k + 1) in enemy_moves:
+                        moves.remove((j, k))
+
+            return moves
+
+        # cerchiamo il re
+        king_pos = None
+        for (j, k), opiece in self.board.get_pieces(valid=True):
+            if opiece.color != piece.color:
+                continue
+            if isinstance(opiece, King):
+                king_pos = (j, k)
+                break
 
         if not king_pos:  # per i test
             return moves
-
-        # remove castling moves if necessary
-        r_castling = (king_pos[0], king_pos[1] + 2)
-        l_castling = (king_pos[0], king_pos[1] - 2)
 
         # per ogni mossa del pezzo che voglio muovere
         for move in list(moves):
@@ -138,30 +158,20 @@ class Game:
                 # supponendo che io abbia fatto quella mossa
                 omoves = self._get_correct_moves(opiece, (j, k))
 
-                # Se la pedina cliccata è il re e se la pedina nemica mi cattura, togliamo la mossa
-                if is_king:
-                    if move in omoves:
-                        if move in moves:
-                            moves.remove(move)
-                    # if one of the castling squares is under attack the king can't castle
-                    if (r_castling[0], r_castling[1] - 1) in omoves:
-                        if r_castling in moves:
-                            moves.remove(r_castling)
-                    if (l_castling[0], l_castling[1] + 1) in omoves:
-                        if l_castling in moves:
-                            moves.remove(l_castling)
-                    if king_pos in omoves:  # check
-                        if r_castling in moves:
-                            moves.remove(r_castling)
-                        if l_castling in moves:
-                            moves.remove(l_castling)
-
-                # se non sono il re e fra le mosse che può fare c'è quella di catturare il re, allora la mossa non si può fare               
-                elif not is_king and king_pos in omoves:
+                # se fra le mosse che può fare c'è quella di catturare il re, allora la mossa non si può fare
+                if king_pos in omoves:
                     moves.remove(move)
-                    # break 
+                    break
             self.board.rollback_board()  # rimettiamo la board com'era prima della mossa
         return moves
+
+    def _get_all_player_moves(self, color):
+        moves = set()
+        for move, piece in self.board.get_pieces(valid=True):
+            if piece.color != color:
+                continue
+            moves = moves.union(self._get_correct_moves(piece, move))
+        return list(moves)
 
     def promote(self, clss):
         # questo metodo viene chiamato solo con la classe con cui si vuole promuovere il pedone,
@@ -175,14 +185,17 @@ class Game:
         new_piece = clss(piece.color)
         # Rimuoviamo il pedone e mettiamo il nuovo pezzo
         self.board.put(self.need_promotion, new_piece)
-        self.change_turn()
         self.need_promotion = None
+        self.end_turn()
 
     def change_turn(self):
         self.turn = BLACK if self.turn == WHITE else WHITE
 
     def update_notation(self, piece, start, end):
         self.notation.append([piece.color, piece.__class__.__name__, start, end])
+
+    def _get_other_player(self, color):
+        return WHITE if color == BLACK else BLACK
 
     def _is_at_the_end(self, position, piece):
         if position[0] == 0 and piece.color == WHITE:

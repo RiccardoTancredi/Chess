@@ -14,29 +14,11 @@ class Board:
     def __init__(self):
         self.board = []
         self._board_copy = []
-        self._create_board()
+        self.initialize()
 
-    def _create_board(self):
-        row1_w = [Rook(WHITE), Knight(WHITE), Bishop(WHITE), Queen(WHITE),
-                  King(WHITE), Bishop(WHITE), Knight(WHITE), Rook(WHITE)]
-        row2_w = []
-        for i in range(ROWS):
-            row2_w.append(Pawn(WHITE))
-
-        row1_b = [Rook(BLACK), Knight(BLACK), Bishop(BLACK), Queen(BLACK),
-                  King(BLACK), Bishop(BLACK), Knight(BLACK), Rook(BLACK)]
-        row2_b = []
-        for i in range(ROWS):
-            row2_b.append(Pawn(BLACK))
-
-        self.board.append(row1_b)
-        self.board.append(row2_b)
-
-        for x in range(4):
-            self.board.append([None] * ROWS)
-
-        self.board.append(row2_w)
-        self.board.append(row1_w)
+    def initialize(self):
+        for x in range(ROWS):
+            self.board.append([None] * COLS)
 
     def get_piece(self, position) -> Piece:
         row, col = position
@@ -177,3 +159,27 @@ class Board:
             text += "\n"
         text = "\n" + text
         return text
+
+
+class ChessBoard(Board):
+    def initialize(self):
+        row1_w = [Rook(WHITE), Knight(WHITE), Bishop(WHITE), Queen(WHITE),
+                  King(WHITE), Bishop(WHITE), Knight(WHITE), Rook(WHITE)]
+        row2_w = []
+        for i in range(ROWS):
+            row2_w.append(Pawn(WHITE))
+
+        row1_b = [Rook(BLACK), Knight(BLACK), Bishop(BLACK), Queen(BLACK),
+                  King(BLACK), Bishop(BLACK), Knight(BLACK), Rook(BLACK)]
+        row2_b = []
+        for i in range(ROWS):
+            row2_b.append(Pawn(BLACK))
+
+        self.board.append(row1_b)
+        self.board.append(row2_b)
+
+        for x in range(4):
+            self.board.append([None] * ROWS)
+
+        self.board.append(row2_w)
+        self.board.append(row1_w)
