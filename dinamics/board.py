@@ -6,7 +6,7 @@ from .pieces.queen import Queen
 from .pieces.bishop import Bishop
 from .pieces.knight import Knight
 from .pieces.rook import Rook
-from .pieces.dragon import Dragon
+
 
 class Board:
     # SHORTCUTS = {"B": Bishop, "N": Knight, "Q": Queen, "R": Rook, "K": King, "P": Pawn}
@@ -17,14 +17,14 @@ class Board:
         self._create_board()
 
     def _create_board(self):
-        row1_w = [Rook(WHITE), Knight(WHITE), Dragon(WHITE), Bishop(WHITE), Queen(WHITE),
-                  King(WHITE), Bishop(WHITE), Dragon(WHITE), Knight(WHITE), Rook(WHITE)]
+        row1_w = [Rook(WHITE), Knight(WHITE), Bishop(WHITE), Queen(WHITE),
+                  King(WHITE), Bishop(WHITE), Knight(WHITE), Rook(WHITE)]
         row2_w = []
         for i in range(ROWS):
             row2_w.append(Pawn(WHITE))
 
-        row1_b = [Rook(BLACK), Knight(BLACK), Dragon(BLACK), Bishop(BLACK), Queen(BLACK),
-                  King(BLACK), Bishop(BLACK), Dragon(BLACK), Knight(BLACK), Rook(BLACK)]
+        row1_b = [Rook(BLACK), Knight(BLACK), Bishop(BLACK), Queen(BLACK),
+                  King(BLACK), Bishop(BLACK), Knight(BLACK), Rook(BLACK)]
         row2_b = []
         for i in range(ROWS):
             row2_b.append(Pawn(BLACK))
@@ -32,7 +32,7 @@ class Board:
         self.board.append(row1_b)
         self.board.append(row2_b)
 
-        for x in range(ROWS-4):
+        for x in range(4):
             self.board.append([None] * ROWS)
 
         self.board.append(row2_w)
@@ -60,7 +60,7 @@ class Board:
     def move(self, start_pos, end_pos, piece):
         srow, scol = start_pos
         erow, ecol = end_pos
-        if isinstance(piece, King) and abs(ecol - scol) == 3:
+        if isinstance(piece, King) and abs(ecol - scol) == 2:
             if ecol - scol > 0:  # the king is doing the short castling
                 self.board[srow][scol + 1] = self.board[srow][ROWS - 1]
                 self.board[srow][ROWS - 1] = None
