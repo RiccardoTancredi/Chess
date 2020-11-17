@@ -10,8 +10,8 @@ class TestCastlingBasic(unittest.TestCase):
     # Esegue questo codice prima di ogni test, quindi mi prepara la board e il game
     def setUp(self):
         self.board = Board()
-        self.game = Game(board=self.board)
         self.board.clear()  # pulisco la board, così diventa tutta vuota
+        self.game = Game(board=self.board)
 
     def tearDown(self):
         pass
