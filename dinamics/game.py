@@ -16,6 +16,19 @@ class Game:
         self.notation = []
         self.need_promotion = None
 
+    def get_possible_moves(self, position):
+        piece = self.board.get_piece(position)
+        if not piece:
+            return []
+
+        moves = self._get_correct_moves(piece, position)
+        moves = self._remove_pinned_moves(position, piece, moves)
+
+        if isinstance(piece, Pawn):
+            moves = piece.en_passant(self.board, position, moves, self.notation)
+
+        return moves
+
     def move_piece(self, start, end, check=True):
         if self.need_promotion:  # se c'è un pezzo da promuovere promuovilo prima di procedere
             return
@@ -38,40 +51,18 @@ class Game:
         if not self.need_promotion:  # Se c'è un pezzo da promuovere non cambiare il turno
             self.change_turn()
 
-    def get_possible_moves(self, position):
-        piece = self.board.get_piece(position)
-        if not piece:
-            return []
-
-        moves = self._get_correct_moves(piece, position)
-        moves = self._remove_pinned_moves(position, piece, moves)
-
-        # if isinstance(piece, King):
-        #     moves = self._castling(piece, self.board, position, moves)
-        if isinstance(piece, Pawn):
-            moves = self._en_passant(piece, self.board, position, moves, self.notation)
-
-        for move in list(moves):
-            other = self.board.get_piece(move)
-            if not other:
-                continue
-
-            if other.color == piece.color:
-                moves.remove(move)
-        return moves
-
     def _get_correct_moves(self, piece, position):
         moves = piece.get_movements()
         moves = self._add_moves_to_pos(piece, position, moves)
         moves = self._remove_outside_board(moves)
+        moves = self._remove_allies_moves(piece, moves)
         moves = piece.edit_moves(self.board, position, moves)
+        moves = self._remove_allies_moves(piece, moves)
         return moves
 
     def _add_moves_to_pos(self, piece, position, moves):
-
         # translate moves coordinate (x, y) to board coordinate (row, col)
         # if it's white we have to reverse the row because the y axes goes down
-
         moves_translated = []
         for move in moves:
             if piece.color == WHITE:
@@ -90,7 +81,6 @@ class Game:
 
         return affine_moves
 
-    # elimina le mosse che sono al di fuori della board
     def _remove_outside_board(self, moves):
         trimmed = []
         for move in moves:
@@ -99,8 +89,17 @@ class Game:
 
         return trimmed
 
-    def _remove_pinned_moves(self, position, piece, moves):
+    def _remove_allies_moves(self, piece, moves):
+        for move in list(moves):
+            other = self.board.get_piece(move)
+            if not other:
+                continue
 
+            if other.color == piece.color:
+                moves.remove(move)
+        return moves
+
+    def _remove_pinned_moves(self, position, piece, moves):
         king_pos = None
         is_king = False
         # se la pedina cliccata è il re
@@ -163,18 +162,6 @@ class Game:
                     # break 
             self.board.rollback_board()  # rimettiamo la board com'era prima della mossa
         return moves
-
-    def _delete_moves(self, piece, board, position, moves):
-        return piece.delete_moves(board, position, moves)
-
-    def _add_moves(self, piece, board, position, moves):
-        return piece.add_moves(board, position, moves)
-
-    # def _castling(self, king, board, position, moves):
-    #     return king.castling(board, position, moves)
-
-    def _en_passant(self, pawn, board, position, moves, notation):
-        return pawn.en_passant(board, position, moves, notation)
 
     def promote(self, clss):
         # questo metodo viene chiamato solo con la classe con cui si vuole promuovere il pedone,

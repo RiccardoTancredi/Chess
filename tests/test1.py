@@ -63,7 +63,7 @@ class TestCastlingBasic(unittest.TestCase):
         self.assertEqual(board.get_piece((7, 5)).__class__, Rook)
 
 
-class TestRookMove(unittest.TestCase):
+class TestRookMoves(unittest.TestCase):
     def setUp(self):
         self.board = Board()
         self.game = Game(board=self.board)
@@ -110,6 +110,7 @@ class TestRookMove(unittest.TestCase):
 def get_suite():
     suite = unittest.TestSuite()
     suite.addTest(TestCastlingBasic("Test Basic Castling"))
+    suite.addTest(TestRookMoves("Test Rook Moves"))
     return suite
 
 
