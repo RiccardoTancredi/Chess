@@ -13,6 +13,14 @@ class Bishop(Piece):
                 (-1, 1), (-2, 2), (-3, 3), (-4, 4), (-5, 5), (-6, 6), (-7, 7)]
 
     def edit_moves(self, board, position, moves):
+
+        row, col = position
+        bishop_moves = list(moves)
+        for j, k in list(bishop_moves):
+            if j == row or k == col:
+                bishop_moves.remove((j, k))
+
+        moves = bishop_moves
         for (i, j), piece in board.get_pieces(valid=True):
             if (i, j) in moves:
                 if j < position[1] and i > position[0]:

@@ -17,6 +17,11 @@ class Rook(Piece):
     def edit_moves(self, board, position, moves):
 
         row, col = position
+        # rook_moves = list(moves)
+        # for j, k in list(rook_moves):
+        #     if j != row and k != col:
+        #         rook_moves.remove((j, k))
+
         moves_left = [(row, col - k) for k in range(1, col + 1)]
         moves_right = [(row, col + k) for k in range(1, COLS - col)]
         moves_up = [(row - k, col) for k in range(1, row + 1)]
