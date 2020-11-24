@@ -17,46 +17,20 @@ class Rook(Piece):
     def edit_moves(self, board, position, moves):
 
         row, col = position
-        # rook_moves = list(moves)
-        # for j, k in list(rook_moves):
-        #     if j != row and k != col:
-        #         rook_moves.remove((j, k))
-
+        # tutte le mosse possibili mosse (anche non legali) verso sinistra, destra, sopra e sotto
         moves_left = [(row, col - k) for k in range(1, col + 1)]
         moves_right = [(row, col + k) for k in range(1, COLS - col)]
         moves_up = [(row - k, col) for k in range(1, row + 1)]
         moves_down = [(row + k, col) for k in range(1, ROWS - row)]
 
         good_moves = set()
+        # qui filtriamo le mosse tenendo soltanto quelle legali per ogni direzione
         good_moves = good_moves.union(self._keep_until_piece(board, moves_left, moves))
         good_moves = good_moves.union(self._keep_until_piece(board, moves_right, moves))
         good_moves = good_moves.union(self._keep_until_piece(board, moves_up, moves))
         good_moves = good_moves.union(self._keep_until_piece(board, moves_down, moves))
 
         return list(good_moves)
-
-        # for (i, j), piece in board.get_pieces(valid=True):
-        #     if (i, j) in moves:
-        #         if i == position[0]:
-        #             if j > position[1]:
-        #                 for l in range(j + 1, COLS + 1):
-        #                     if (i, l) in moves:
-        #                         moves.remove((i, l))
-        #             elif j < position[1]:
-        #                 for l in range(0, j):
-        #                     if (i, l) in moves:
-        #                         moves.remove((i, l))
-        #         elif j == position[1]:
-        #             if i > position[0]:
-        #                 for k in range(i + 1, ROWS + 1):
-        #                     if (k, j) in moves:
-        #                         moves.remove((k, j))
-        #             elif i < position[0]:
-        #                 for k in range(0, i):
-        #                     if (k, j) in moves:
-        #                         moves.remove((k, j))
-        #
-        # return moves
 
     # praticamente, dato che sono in ordine, cioè il primo è il più vicino alla torre e l'ultimo più lontano
     # (ricordando che sono mosse o sopra o a destra o a sinistra o sotto della torre) appena troviamo un pezzo,
@@ -66,9 +40,10 @@ class Rook(Piece):
         for move in moves:
             piece = board.get_piece(move)
             if piece:
-                if piece.color != self.color:
-                    if move in legal_moves:
-                        good_moves.add(move)
+                # abbiamo trovato un pezzo, quindi se è nemico aggiungiamo la mossa, altrimenti la saltiamo
+                # in ogni caso fermiamo il ciclo in quanto nessun'altra mossa dopo potrà essere legale
+                if piece.color != self.color and move in legal_moves:
+                    good_moves.add(move)
                 break
 
             if move in legal_moves:

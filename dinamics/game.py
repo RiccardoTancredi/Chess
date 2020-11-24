@@ -64,7 +64,7 @@ class Game:
         moves = piece.get_movements()
         moves = self._add_moves_to_pos(piece, position, moves)
         moves = self._remove_outside_board(moves)
-        # moves = self._remove_allies_moves(piece, moves)
+        moves = self._remove_allies_moves(piece, moves)
         moves = piece.edit_moves(self.board, position, moves)
 
         if isinstance(piece, Pawn):

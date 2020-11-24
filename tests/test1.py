@@ -130,6 +130,45 @@ class TestRookMoves(unittest.TestCase):
             self.assertIn((3, i), moves)
 
 
+class TestBishopMoves(unittest.TestCase):
+    def setUp(self):
+        self.board = Board()
+        self.game = Game(board=self.board)
+
+    def test_bishop_free_path(self):
+        board, game = self.board, self.game
+        board.put((3, 3), clss=Bishop, color=WHITE)
+        moves = game.get_possible_moves((3, 3))
+        good_moves = [(0, 0), (1, 1), (2, 2), (4, 4), (5, 5), (6, 6), (7, 7),
+                      (4, 2), (5, 1), (6, 0), (2, 4), (1, 5), (0, 6)]
+        for move in good_moves:
+            self.assertIn(move, moves)
+
+    def test_bishop_path_blocked_allies(self):
+        board, game = self.board, self.game
+        board.put((3, 3), clss=Bishop, color=WHITE)
+        board.put((4, 4), clss=Pawn, color=WHITE)
+        board.put((2, 2), clss=Pawn, color=WHITE)
+        board.put((2, 4), clss=Pawn, color=WHITE)
+        board.put((4, 2), clss=Pawn, color=WHITE)
+        moves = game.get_possible_moves((3, 3))
+        self.assertEqual(len(moves), 0)
+
+    def test_rook_path_blocked_enemies(self):
+        board, game = self.board, self.game
+        board.put((3, 3), clss=Bishop, color=WHITE)
+        board.put((4, 4), clss=Pawn, color=BLACK)
+        board.put((2, 2), clss=Pawn, color=BLACK)
+        board.put((2, 4), clss=Pawn, color=BLACK)
+        board.put((4, 2), clss=Pawn, color=BLACK)
+        moves = game.get_possible_moves((3, 3))
+        self.assertIn((4, 4), moves)
+        self.assertIn((2, 2), moves)
+        self.assertIn((2, 4), moves)
+        self.assertIn((4, 2), moves)
+        self.assertEqual(len(moves), 4)
+
+
 class TestEnPassant(unittest.TestCase):
     def setUp(self):
         self.board = Board()
@@ -165,6 +204,7 @@ def get_suite():
     suite.addTest(TestCastlingAdvanced("Test Advanced Castling"))
     suite.addTest(TestRookMoves("Test Rook Moves"))
     suite.addTest(TestEnPassant("Test En Passant"))
+    suite.addTest(TestBishopMoves("Test Bishop Moves"))
     return suite
 
 
