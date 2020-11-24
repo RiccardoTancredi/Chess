@@ -67,6 +67,12 @@ class Pawn(Piece):
 
         return moves
 
+    def side_effects(self, board, start, end):
+        srow, scol = start
+        erow, ecol = end
+        # this means that the pawn is moving diagonally
+        if not board.get_piece(end) and abs(ecol - scol) == 1:
+            board.put(position=(srow, ecol), piece=None)
 
     # def promotion(self, board):
     #     piece_name = input("What do you want your piece to become? \n")

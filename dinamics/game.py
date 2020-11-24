@@ -33,7 +33,7 @@ class Game:
 
         return moves
 
-    def move_piece(self, start, end, check=True):
+    def move_piece(self, start, end, check=False):
         if self.need_promotion:  # se c'è un pezzo da promuovere promuovilo prima di procedere
             return
 
@@ -44,8 +44,9 @@ class Game:
         if check:  # se vogliamo controllare che sia una mossa valida. potremo non volerlo quando usiamo la grafica
             pass  # todo
 
-        self.board.move(start, end, piece)
-        piece.on_move(start, end)
+        piece.side_effects(self.board, start, end)
+        self.board.move(start, end)
+        piece.after_move(start, end)
 
         self.update_notation(piece, start, end)
 
@@ -148,10 +149,10 @@ class Game:
             self.board.save_board()  # salviamo la board come è
             # moviamo il pezzo secondo una delle mosse possibili
             # nel move c'è della logica che potrebbe dar problemi
-            self.board.move(position, move, piece)
+            self.board.move(position, move)
             for (j, k), opiece in self.board.get_pieces(valid=True):  # per ogni pezzo della board
                 # se è un alleato saltiamo
-                if opiece.color == piece.color or (isinstance(opiece, King) and opiece.color == piece.color):
+                if opiece.color == piece.color:
                     continue
 
                 # per ogni casella nemica calcoliamo tutti i movimenti che quella potrebbe fare

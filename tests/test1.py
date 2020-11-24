@@ -130,11 +130,41 @@ class TestRookMoves(unittest.TestCase):
             self.assertIn((3, i), moves)
 
 
+class TestEnPassant(unittest.TestCase):
+    def setUp(self):
+        self.board = Board()
+        self.game = Game(board=self.board)
+
+    def test_en_passant_white(self):
+        board, game = self.board, self.game
+        board.put((1, 0), clss=Pawn, color=BLACK)
+        board.put((4, 1), clss=Pawn, color=WHITE)
+        game.move_piece((4, 1), (3, 1))
+        game.move_piece((1, 0), (3, 0))
+        moves = game.get_possible_moves((3, 1))
+        self.assertIn((2, 0), moves)
+        game.move_piece((3, 1), (2, 0))
+        self.assertIsNone(self.board.get_piece((3, 0)))
+
+    def test_en_passant_black(self):
+        board, game = self.board, self.game
+        board.put((3, 2), clss=Pawn, color=BLACK)
+        board.put((6, 1), clss=Pawn, color=WHITE)
+        game.change_turn()
+        game.move_piece((3, 2), (4, 2))
+        game.move_piece((6, 1), (4, 1))
+        moves = game.get_possible_moves((4, 2))
+        self.assertIn((5, 1), moves)
+        game.move_piece((4, 2), (5, 1))
+        self.assertIsNone(self.board.get_piece((4, 1)))
+
+
 def get_suite():
     suite = unittest.TestSuite()
     suite.addTest(TestCastlingBasic("Test Basic Castling"))
     suite.addTest(TestCastlingAdvanced("Test Advanced Castling"))
     suite.addTest(TestRookMoves("Test Rook Moves"))
+    suite.addTest(TestEnPassant("Test En Passant"))
     return suite
 
 

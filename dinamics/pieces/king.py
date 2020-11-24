@@ -1,3 +1,4 @@
+from dinamics.constants import ROWS
 from dinamics.piece import Piece
 
 
@@ -25,3 +26,16 @@ class King(Piece):
                     moves.append((row, col - 2))
 
         return moves
+
+    def side_effects(self, board, start, end):
+        srow, scol = start
+        erow, ecol = end
+        if abs(ecol - scol) == 2:
+            if ecol - scol > 0:  # the king is doing the short castling
+                board.move((srow, ROWS - 1), (srow, scol + 1))
+                # self.board[srow][scol + 1] = self.board[srow][ROWS - 1]
+                # self.board[srow][ROWS - 1] = None
+            if ecol - scol < 0:  # long castling
+                board.move((srow, 0), (srow, scol - 1))
+                # self.board[srow][scol - 1] = self.board[srow][0]
+                # self.board[srow][0] = None

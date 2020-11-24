@@ -39,26 +39,9 @@ class Board:
                 pieces.append(value)
         return pieces
 
-    def move(self, start_pos, end_pos, piece):
+    def move(self, start_pos, end_pos):
         srow, scol = start_pos
         erow, ecol = end_pos
-        if isinstance(piece, King) and abs(ecol - scol) == 2:
-            if ecol - scol > 0:  # the king is doing the short castling
-                self.board[srow][scol + 1] = self.board[srow][ROWS - 1]
-                self.board[srow][ROWS - 1] = None
-            if ecol - scol < 0:  # long castling
-                self.board[srow][scol - 1] = self.board[srow][0]
-                self.board[srow][0] = None
-
-        elif isinstance(piece, Pawn):
-            # this means that the pawn is moving diagonally
-            if not self.get_piece(end_pos) and abs(ecol - scol) == 1:
-                # if ecol - scol > 0:  # pawn en passant to the right
-                # self.board[erow][ecol], self.board[srow][scol] = self.board[srow][scol], None
-                self.board[srow][ecol] = None
-                # if ecol - scol < 0:  # pawn en passant to the left
-                #     self.board[erow][ecol], self.board[srow][scol-1] = self.board[srow][scol], None
-
         self.board[erow][ecol] = self.board[srow][scol]
         self.board[srow][scol] = None
 
@@ -89,56 +72,7 @@ class Board:
             for j in range(COLS):
                 self.board[i][j] = None
 
-    # def _create_from_string(self, board_string: str):
-    #     rows = []
-    #     max_w = 0
-    #     board_string = board_string.strip()
-    #     for line in board_string.split("\n"):
-    #         line = line.strip()
-    #         if not line:
-    #             continue
-    #
-    #         pieces_raw = line.split(" ")
-    #         pieces = []
-    #         for piece_raw in pieces_raw:
-    #             piece_raw = piece_raw.strip()
-    #
-    #             if not piece_raw:
-    #                 continue
-    #
-    #             if piece_raw[0] == "-":
-    #                 pieces.append(None)
-    #                 continue
-    #
-    #             clss = Board.SHORTCUTS.get(piece_raw[0])
-    #             if not clss or not len(piece_raw) == 2:
-    #                 continue
-    #
-    #             color = WHITE
-    #             if piece_raw[1] == "b":
-    #                 color = BLACK
-    #
-    #             pieces.append(clss(color))
-    #
-    #         if len(pieces) > max_w:
-    #             max_w = len(pieces)
-    #
-    #         rows.append(pieces)
-    #
-    #     # crea una scacchiera vuota
-    #     for _ in range(ROWS):
-    #         self.board.append([None] * COLS)
-    #
-    #     start_w = (COLS - max_w) // 2
-    #     start_h = (ROWS - len(rows) - 1) // 2
-    #
-    #     for j in range(start_h, start_h + len(rows)):
-    #         row = rows[j - start_h]
-    #         k = start_w + len(row)
-    #         self.board[j][start_w: k] = row
-
     def __repr__(self) -> str:
-
         emojis_w = {King: "♔", Queen: "♕", Rook: "♖", Bishop: "♗", Knight: "♘", Pawn: "♙"}
         emojis_b = {King: "♚", Queen: "♛", Rook: "♜", Bishop: "♝", Knight: "♞", Pawn: "♟"}
 
