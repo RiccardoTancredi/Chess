@@ -22,7 +22,7 @@ class TestCastlingBasic(unittest.TestCase):
         self.assertIn((0, 2), moves)
 
         game.change_turn()  # sto testando i neri, quindi devo passare il turno
-        game.move_piece((0, 4), (0, 2), check=False)
+        game.move_piece((0, 4), (0, 2))
         # controllo che la torre si sia spostata
         self.assertEqual(board.get_piece((0, 3)).__class__, Rook)
 
@@ -36,7 +36,7 @@ class TestCastlingBasic(unittest.TestCase):
         self.assertIn((0, 6), moves)
 
         game.change_turn()
-        game.move_piece((0, 4), (0, 6), check=False)
+        game.move_piece((0, 4), (0, 6))
         self.assertEqual(board.get_piece((0, 5)).__class__, Rook)
 
     def test_castling_white_long(self):
@@ -47,7 +47,7 @@ class TestCastlingBasic(unittest.TestCase):
         moves = game.get_possible_moves((7, 4))
         self.assertIn((7, 2), moves)
 
-        game.move_piece((7, 4), (7, 2), check=False)
+        game.move_piece((7, 4), (7, 2))
         self.assertEqual(board.get_piece((7, 3)).__class__, Rook)
 
     def test_castling_white_short(self):
@@ -59,7 +59,7 @@ class TestCastlingBasic(unittest.TestCase):
         self.assertIn((7, 6), moves)
 
         game.change_turn()
-        game.move_piece((7, 4), (0, 6), check=False)
+        game.move_piece((7, 4), (0, 6))
         self.assertEqual(board.get_piece((7, 5)).__class__, Rook)
 
 

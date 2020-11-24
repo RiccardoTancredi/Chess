@@ -19,7 +19,10 @@ class Draw:
     def __init__(self, win, game, assets_dir):
         self.win = win
         self.board = game.board
+        self.game = game
         self.scale_factor = (int(WIDTH * 50 / 400), int(HEIGHT * 50 / 400))
+        pygame.font.init()
+        self.font = pygame.font.SysFont("monospace", 100)
 
         self.white_pieces = {
             Pawn: scale(pygame.image.load(f'{assets_dir}/white_pawn.png'), self.scale_factor),
@@ -40,16 +43,20 @@ class Draw:
 
         self.prom_rects = {}
 
-    def update(self, moves=None, promotion=False):
+    def update(self, moves=None):
         if not moves:
             moves = []
 
         self.draw_squares()
         self.draw_pieces()
         self.draw_valid_moves(moves)
-        if promotion:
-            piece = self.board.get_piece(promotion)
+        if self.game.checkmate:
+            self.draw_checkmate(self.game.checkmate)
+
+        elif self.game.need_promotion:
+            piece = self.board.get_piece(self.game.need_promotion)
             self.draw_promotion(piece.color)
+
         pygame.display.update()
 
     def draw_squares(self):
@@ -88,6 +95,20 @@ class Draw:
         for (row, col) in moves:
             position = (col * SQUARE_SIZE + SQUARE_SIZE // 2, row * SQUARE_SIZE + SQUARE_SIZE // 2)
             pygame.draw.circle(self.win, C_BLUE, position, 10)
+
+    def draw_checkmate(self, winner):
+        height = 200
+        starty = (HEIGHT - height) / 2
+        pygame.draw.rect(self.win, C_BLUE, Rect((0, starty), (WIDTH, height)))
+
+        y_margin = (height - SQUARE_SIZE) / 2
+        self.draw_piece(King, winner, WIDTH / 8, starty + y_margin)
+        color = C_BLACK if winner == BLACK else C_WHITE
+
+        label = self.font.render("VINCE", 2, color)  # 2 = antialiasing
+        y_label = (height - label.get_size()[1]) / 2
+        x_label = (WIDTH - label.get_size()[0] - 50) / 2 + SQUARE_SIZE
+        self.win.blit(label, (x_label, starty + y_label))
 
     def choose_promotion(self, x, y):
         choosen = None

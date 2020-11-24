@@ -33,7 +33,7 @@ def main():
         clock.tick(FPS)
         turn = game.turn
 
-        draw.update(moves, game.need_promotion)  # disegna il box della promozione se serve
+        draw.update(moves)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:

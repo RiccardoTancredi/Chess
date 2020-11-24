@@ -15,6 +15,7 @@ class Game:
         self.turn = WHITE
         self.notation = []
         self.need_promotion = None
+        self.checkmate = None
         self._player_moves = {}
 
         self.initialize()
@@ -59,12 +60,16 @@ class Game:
     def end_turn(self):
         self._player_moves[self.turn] = self._get_all_player_moves(self.turn)
         self.change_turn()
+        # ad ogni fine turno controlliamo se quello che ha mosso ha vinto o no controllando le mosse dell'altro
+        if self._is_checkmate(self.turn):
+            self.checkmate = self._get_other_player(self.turn)
+            print(f"E' scacco matto! {self.turn} ha perso :(")
 
     def _get_correct_moves(self, piece, position):
         moves = piece.get_movements()
         moves = self._add_moves_to_pos(piece, position, moves)
         moves = self._remove_outside_board(moves)
-        moves = self._remove_allies_moves(piece, moves)
+        # moves = self._remove_allies_moves(piece, moves)
         moves = piece.edit_moves(self.board, position, moves)
 
         if isinstance(piece, Pawn):
@@ -86,7 +91,6 @@ class Game:
             moves_translated.append(move_t)
 
         moves = moves_translated
-
         affine_moves = []
         for move in moves:  # translate the moves from (0,0) to position
             aff_move = (move[0] + position[0], move[1] + position[1])
@@ -165,6 +169,16 @@ class Game:
                     break
             self.board.rollback_board()  # rimettiamo la board com'era prima della mossa
         return moves
+
+    def _is_checkmate(self, color):
+        # semplicemente controlliamo ogni pedina e vediamo se si può muovere
+        for move, piece in self.board.get_pieces(valid=True):
+            if piece.color != color:
+                continue
+            moves = self.get_possible_moves(move)
+            if moves:
+                return False
+        return True
 
     def _get_all_player_moves(self, color):
         moves = set()
