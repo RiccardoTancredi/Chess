@@ -16,13 +16,6 @@ class Game:
         self.notation = []
         self.need_promotion = None
         self.checkmate = None
-        self._player_moves = {}
-
-        self.initialize()
-
-    def initialize(self):
-        self._player_moves[WHITE] = self._get_all_player_moves(WHITE)
-        self._player_moves[BLACK] = self._get_all_player_moves(BLACK)
 
     def get_possible_moves(self, position):
         piece = self.board.get_piece(position)
@@ -58,12 +51,10 @@ class Game:
             self.end_turn()
 
     def end_turn(self):
-        self._player_moves[self.turn] = self._get_all_player_moves(self.turn)
         self.change_turn()
         # ad ogni fine turno controlliamo se quello che ha mosso ha vinto o no controllando le mosse dell'altro
         if self._is_checkmate(self.turn):
             self.checkmate = self._get_other_player(self.turn)
-            print(f"E' scacco matto! {self.turn} ha perso :(")
 
     def _get_correct_moves(self, piece, position):
         moves = piece.get_movements()
@@ -117,42 +108,29 @@ class Game:
         return moves
 
     def _remove_pinned_moves(self, position, piece, moves):
-        # se la pedina cliccata è il re
-        if isinstance(piece, King):
-            opposite = self._get_other_player(piece.color)
-            enemy_moves = self._player_moves[opposite]
-            for move in list(moves):
-                if move in enemy_moves:
-                    moves.remove(move)
 
-            for (j, k) in list(moves):
-                if k - position[1] == -2:
-                    if (j, k + 1) not in moves or (j, k - 1) in enemy_moves:
-                        moves.remove((j, k))
+        is_king = False
+        if isinstance(piece, King):  # se la pedina cliccata è il re
+            king_pos = position
+            is_king = True
+            moves.append(king_pos)  # aggiungiamo fra le mosse possibile la mosse di stare fermo (spiegato dopo)
 
-                elif k - position[1] == 2:
-                    if (j, k - 1) not in moves or (j, k + 1) in enemy_moves:
-                        moves.remove((j, k))
+        else:  # altrimenti, cerchiamo il re
+            king_pos = None
+            for (j, k), opiece in self.board.get_pieces(valid=True):
+                if opiece.color == piece.color and isinstance(opiece, King):
+                    king_pos = (j, k)
+                    break
 
-            return moves
+            if not king_pos:  # per i test
+                return moves
 
-        # cerchiamo il re
-        king_pos = None
-        for (j, k), opiece in self.board.get_pieces(valid=True):
-            if opiece.color != piece.color:
-                continue
-            if isinstance(opiece, King):
-                king_pos = (j, k)
-                break
-
-        if not king_pos:  # per i test
-            return moves
-
+        can_castle_sx = True
+        can_castle_dx = True
         # per ogni mossa del pezzo che voglio muovere
         for move in list(moves):
             self.board.save_board()  # salviamo la board come è
             # moviamo il pezzo secondo una delle mosse possibili
-            # nel move c'è della logica che potrebbe dar problemi
             self.board.move(position, move)
             for (j, k), opiece in self.board.get_pieces(valid=True):  # per ogni pezzo della board
                 # se è un alleato saltiamo
@@ -163,11 +141,38 @@ class Game:
                 # supponendo che io abbia fatto quella mossa
                 omoves = self._get_correct_moves(opiece, (j, k))
 
+                if is_king and move in omoves:  # quindi il re muovendosi sarebbe sotto scacco
+                    if move == king_pos:  # se è la mossa di stare fermo, vuol dire che il re è sotto scacco
+                        # di conseguenza non possiamo fare nessun arrocco
+                        can_castle_sx = False
+                        can_castle_dx = False
+
+                    elif move[0] == king_pos[0]:  # se è una mossa sulla stessa riga
+                        if move[1] < king_pos[1]:  # se è una mossa verso sinistra (che è sotto scacco)
+                            can_castle_sx = False  # non possiamo arroccare a sx
+                        else:
+                            can_castle_dx = False  # viceversa, non possiamo arroccare a destra
+
+                    moves.remove(move)  # a prescindere, dato che è una mossa che porterebbe sotto scacco, togliamola
+                    break
+
                 # se fra le mosse che può fare c'è quella di catturare il re, allora la mossa non si può fare
-                if king_pos in omoves:
+                if not is_king and king_pos in omoves:
                     moves.remove(move)
                     break
             self.board.rollback_board()  # rimettiamo la board com'era prima della mossa
+
+        if is_king:
+            # se non possiamo arroccare, dobbiamo togliere quelle mosse
+            for (j, k) in list(moves):
+                if k - king_pos[1] == -2 and not can_castle_sx:  # è un arrocco a sx e non possiamo farlo
+                    moves.remove((j, k))
+                elif k - king_pos[1] == 2 and not can_castle_dx:
+                    moves.remove((j, k))
+
+            if king_pos in moves:  # togliamo la mossa farlocca che avevamo aggiunto all'inizio
+                moves.remove(king_pos)
+
         return moves
 
     def _is_checkmate(self, color):

@@ -16,7 +16,6 @@ class TestCastlingBasic(unittest.TestCase):
         board, game = self.board, self.game  # variabili più corte
         board.put((0, 0), clss=Rook, color=BLACK)  # metto la torre in 1, 1
         board.put((0, 4), clss=King, color=BLACK)  # metto il re in 1, 5
-        game.initialize()
         moves = game.get_possible_moves((0, 4))  # prendo le mosse possibili del re
         # controllo che l'arrocco sia fra le mosse, se non lo è da errore
         self.assertIn((0, 2), moves)
@@ -31,7 +30,6 @@ class TestCastlingBasic(unittest.TestCase):
         board, game = self.board, self.game
         board.put((0, 7), clss=Rook, color=BLACK)
         board.put((0, 4), clss=King, color=BLACK)
-        game.initialize()
         moves = game.get_possible_moves((0, 4))
         self.assertIn((0, 6), moves)
 
@@ -43,7 +41,6 @@ class TestCastlingBasic(unittest.TestCase):
         board, game = self.board, self.game
         board.put((7, 0), clss=Rook, color=WHITE)
         board.put((7, 4), clss=King, color=WHITE)
-        game.initialize()
         moves = game.get_possible_moves((7, 4))
         self.assertIn((7, 2), moves)
 
@@ -54,7 +51,6 @@ class TestCastlingBasic(unittest.TestCase):
         board, game = self.board, self.game
         board.put((7, 7), clss=Rook, color=BLACK)
         board.put((7, 4), clss=King, color=BLACK)
-        game.initialize()
         moves = game.get_possible_moves((7, 4))
         self.assertIn((7, 6), moves)
 
@@ -63,7 +59,7 @@ class TestCastlingBasic(unittest.TestCase):
         self.assertEqual(board.get_piece((7, 5)).__class__, Rook)
 
 
-class TestCastlingAdvanced(unittest.TestCase):
+class TestCastling(unittest.TestCase):
     def setUp(self):
         self.board = Board()
         self.game = Game(board=self.board)
@@ -73,16 +69,22 @@ class TestCastlingAdvanced(unittest.TestCase):
         board.put((0, 7), clss=Rook, color=BLACK)
         board.put((0, 4), clss=King, color=BLACK)
         board.put((4, 6), clss=Rook, color=WHITE)
-        game.initialize()
         moves = game.get_possible_moves((0, 4))
         self.assertNotIn((0, 6), moves)
 
-    def test_cannot_castling_rook_blocked(self):
+    def test_cannot_castling_path_blocked2(self):
         board, game = self.board, self.game
         board.put((0, 7), clss=Rook, color=BLACK)
         board.put((0, 4), clss=King, color=BLACK)
-        board.put((4, 7), clss=Rook, color=WHITE)
-        game.initialize()
+        board.put((4, 5), clss=Rook, color=WHITE)
+        moves = game.get_possible_moves((0, 4))
+        self.assertNotIn((0, 6), moves)
+
+    def test_cannot_castling_if_check(self):
+        board, game = self.board, self.game
+        board.put((0, 7), clss=Rook, color=BLACK)
+        board.put((0, 4), clss=King, color=BLACK)
+        board.put((4, 4), clss=Rook, color=WHITE)
         moves = game.get_possible_moves((0, 4))
         self.assertNotIn((0, 6), moves)
 
@@ -198,13 +200,30 @@ class TestEnPassant(unittest.TestCase):
         self.assertIsNone(self.board.get_piece((4, 1)))
 
 
+class TestCheckmate(unittest.TestCase):
+    def setUp(self):
+        self.board = Board()
+        self.game = Game(board=self.board)
+
+    def test_checkmate_pawn_over_king(self):
+        board, game = self.board, self.game
+        board.put((0, 4), clss=King, color=BLACK)
+        board.put((1, 4), clss=Pawn, color=WHITE)
+        moves = game.get_possible_moves((0, 4))
+        self.assertEqual(len(moves), 3)
+        self.assertIn((1, 4), moves)
+        self.assertIn((1, 3), moves)
+        self.assertIn((1, 5), moves)
+
+
 def get_suite():
     suite = unittest.TestSuite()
     suite.addTest(TestCastlingBasic("Test Basic Castling"))
-    suite.addTest(TestCastlingAdvanced("Test Advanced Castling"))
+    suite.addTest(TestCastling("Test Castling"))
     suite.addTest(TestRookMoves("Test Rook Moves"))
     suite.addTest(TestEnPassant("Test En Passant"))
     suite.addTest(TestBishopMoves("Test Bishop Moves"))
+    suite.addTest(TestCheckmate("Test Checkmate"))
     return suite
 
 
