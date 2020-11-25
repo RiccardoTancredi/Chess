@@ -117,3 +117,32 @@ class ChessBoard(Board):
 
         self.board.append(row2_w)
         self.board.append(row1_w)
+
+
+class TestBoard(Board):
+    def initialize(self):
+        row1_w = [Rook(WHITE), Knight(WHITE), Bishop(WHITE), Queen(WHITE),
+                  King(WHITE), Bishop(WHITE), Knight(WHITE), Rook(WHITE)]
+        row1_b = [Rook(BLACK), Knight(BLACK), Bishop(BLACK), Queen(BLACK),
+                  King(BLACK), Bishop(BLACK), Knight(BLACK), Rook(BLACK)]
+        self.board.append(row1_b)
+        for x in range(6):
+            self.board.append([None] * ROWS)
+
+        self.board.append(row1_w)
+
+
+class DrawBoard(Board):
+    def initialize(self):
+        row1 = [None, None, Queen(WHITE), None, None, Bishop(BLACK), Knight(BLACK), Rook(BLACK)]
+        row2 = [None, None, None, None, Pawn(BLACK), None, Pawn(BLACK), Queen(BLACK)]
+        row3 = [None, None, None, None, None, Pawn(BLACK), King(BLACK), Rook(BLACK)]
+        row4 = [None, None, None, None, None, None, None, Pawn(BLACK)]
+        row5 = [None, None, None, None, None, None, None, Pawn(WHITE)]
+        self.board.append(row1)
+        self.board.append(row2)
+        self.board.append(row3)
+        self.board.append(row4)
+        self.board.append(row5)
+        for x in range(3):
+            self.board.append([None] * ROWS)

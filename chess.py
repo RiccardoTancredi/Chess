@@ -2,7 +2,7 @@ import pygame
 
 from dinamics.game import Game
 from dinamics.piece import Piece
-from dinamics.board import Board
+from dinamics.board import Board, TestBoard, DrawBoard
 from dinamics.constants import *
 from dinamics.draw import Draw
 
@@ -19,6 +19,7 @@ def get_row_col_from_mouse(pos):
     return row, col
 
 
+# game = Game(board=DrawBoard())
 game = Game()
 draw = Draw(WIN, game, "./assets")
 
@@ -38,6 +39,9 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
+
+            if game.status != Game.PLAYING:
+                continue
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 raw_pos = pygame.mouse.get_pos()

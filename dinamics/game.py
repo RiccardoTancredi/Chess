@@ -6,6 +6,8 @@ from dinamics.pieces.pawn import Pawn
 
 
 class Game:
+    PLAYING, CHECKMATE, DRAW = 1, 2, 3  # delle costanti per specificare lo status della partita
+
     def __init__(self, board=None):
         if board:
             self.board = board
@@ -15,7 +17,8 @@ class Game:
         self.turn = WHITE
         self.notation = []
         self.need_promotion = None
-        self.checkmate = None
+        self.status = Game.PLAYING  # specifica se il game è finito in checkmate, patta o se è ancora in corso
+        self.winner = None  # se il game è finito e c'è un vincitore: checkmate, altrimenti: patta
 
     def get_possible_moves(self, position):
         piece = self.board.get_piece(position)
@@ -28,6 +31,9 @@ class Game:
         return moves
 
     def move_piece(self, start, end, check=False):
+        if self._is_game_ended():
+            return
+
         if self.need_promotion:  # se c'è un pezzo da promuovere promuovilo prima di procedere
             return
 
@@ -53,8 +59,9 @@ class Game:
     def end_turn(self):
         self.change_turn()
         # ad ogni fine turno controlliamo se quello che ha mosso ha vinto o no controllando le mosse dell'altro
-        if self._is_checkmate(self.turn):
-            self.checkmate = self._get_other_player(self.turn)
+        self.status = self._get_game_status(self.turn)  # ritorna se è patta, checkmate o ancora giocabile
+        if self.status == Game.CHECKMATE:
+            self.winner = self._get_other_player(self.turn)
 
     def _get_correct_moves(self, piece, position):
         moves = piece.get_movements()
@@ -116,12 +123,7 @@ class Game:
             moves.append(king_pos)  # aggiungiamo fra le mosse possibile la mosse di stare fermo (spiegato dopo)
 
         else:  # altrimenti, cerchiamo il re
-            king_pos = None
-            for (j, k), opiece in self.board.get_pieces(valid=True):
-                if opiece.color == piece.color and isinstance(opiece, King):
-                    king_pos = (j, k)
-                    break
-
+            king_pos = self._get_king_position(piece.color)
             if not king_pos:  # per i test
                 return moves
 
@@ -175,15 +177,25 @@ class Game:
 
         return moves
 
-    def _is_checkmate(self, color):
-        # semplicemente controlliamo ogni pedina e vediamo se si può muovere
+    def _get_game_status(self, color):
+        # ritorna se il gioco è finito con una vittoria, una patta o è ancora in corso
+        check = False
+        king_pos = self._get_king_position(color)
         for move, piece in self.board.get_pieces(valid=True):
             if piece.color != color:
                 continue
             moves = self.get_possible_moves(move)
-            if moves:
-                return False
-        return True
+            if king_pos in moves:  # se il re è sotto scacco, segnamocelo
+                check = True
+
+            if moves:  # appena trovo delle mosse che potrei fare, ritorno che sono ancora in gioco
+                return Game.PLAYING
+
+        # se sono qui, vuol dire che non c'è nessuna mossa disponibile
+        if check:  # se il re è sotto scacco, allora ho perso
+            return Game.CHECKMATE
+        else:  # è patta
+            return Game.DRAW
 
     def _get_all_player_moves(self, color):
         moves = set()
@@ -216,6 +228,14 @@ class Game:
 
     def _get_other_player(self, color):
         return WHITE if color == BLACK else BLACK
+
+    def _is_game_ended(self):
+        return not self.status == Game.PLAYING
+
+    def _get_king_position(self, color):
+        for (j, k), piece in self.board.get_pieces(valid=True):
+            if piece.color == color and isinstance(piece, King):
+                return j, k
 
     def _is_at_the_end(self, position, piece):
         if position[0] == 0 and piece.color == WHITE:

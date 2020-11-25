@@ -2,6 +2,7 @@ import pygame
 from pygame import Rect
 from pygame.transform import scale
 
+from .game import Game
 from .pieces.bishop import Bishop
 from .pieces.king import King
 from .pieces.knight import Knight
@@ -50,8 +51,11 @@ class Draw:
         self.draw_squares()
         self.draw_pieces()
         self.draw_valid_moves(moves)
-        if self.game.checkmate:
+        if self.game.status == Game.CHECKMATE:
             self.draw_checkmate(self.game.checkmate)
+
+        elif self.game.status == Game.DRAW:
+            self.draw_draw()
 
         elif self.game.need_promotion:
             piece = self.board.get_piece(self.game.need_promotion)
@@ -108,6 +112,15 @@ class Draw:
         label = self.font.render("VINCE", 2, color)  # 2 = antialiasing
         y_label = (height - label.get_size()[1]) / 2
         x_label = (WIDTH - label.get_size()[0] - 50) / 2 + SQUARE_SIZE
+        self.win.blit(label, (x_label, starty + y_label))
+
+    def draw_draw(self):
+        height = 200
+        starty = (HEIGHT - height) / 2
+        pygame.draw.rect(self.win, C_BLUE, Rect((0, starty), (WIDTH, height)))
+        label = self.font.render("PATTA", 2, C_WHITE)  # 2 = antialiasing
+        y_label = (height - label.get_size()[1]) / 2
+        x_label = (WIDTH - label.get_size()[0]) / 2
         self.win.blit(label, (x_label, starty + y_label))
 
     def choose_promotion(self, x, y):
