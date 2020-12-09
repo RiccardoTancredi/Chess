@@ -3,7 +3,7 @@ from dinamics.constants import WHITE, BLACK
 from dinamics.constants import ROWS, COLS
 from dinamics.pieces.king import King
 from dinamics.pieces.pawn import Pawn
-
+from latex import latex_init, latex_write
 
 class Game:
     PLAYING, CHECKMATE, DRAW = 1, 2, 3  # delle costanti per specificare lo status della partita
@@ -15,10 +15,14 @@ class Game:
             self.board = ChessBoard()
 
         self.turn = WHITE
+        self.turn_number  = 0
         self.notation = []
+        self.latex_notation = ""
         self.need_promotion = None
         self.status = Game.PLAYING  # specifica se il game è finito in checkmate, patta o se è ancora in corso
         self.winner = None  # se il game è finito e c'è un vincitore: checkmate, altrimenti: patta
+        self.latex_file_name = "Chess_Game.tex"
+        self.doc = latex_init()
 
     def get_possible_moves(self, position):
         piece = self.board.get_piece(position)
@@ -49,6 +53,7 @@ class Game:
         piece.after_move(start, end)
 
         self.update_notation(piece, start, end)
+        self.update_latex_notation(piece, start, end)
 
         if isinstance(piece, Pawn) and self._is_at_the_end(end, piece):
             self.need_promotion = end
@@ -225,7 +230,34 @@ class Game:
 
     def update_notation(self, piece, start, end):
         self.notation.append([piece.color, piece.__class__.__name__, start, end])
-
+    
+    def update_latex_notation(self, piece, start, end):
+        chess_notation = {"Rook": "R", "Knight": "N", "Bishop": "B", "King": "K", "Queen": "Q"}
+        ches_notation_col = {0: "a", 1: "b", 2: "c", 3: "d", 4: "e", 5: "f", 6: "g", 7: "h"}
+        ches_notation_row = {7: "1", 6: "2", 5: "3", 4: "4", 3: "5", 2: "6", 1: "7", 0: "8"}
+        piece_name = piece.__class__.__name__
+        notation_name = chess_notation[piece_name] if piece_name in chess_notation else "" 
+            
+        if self.turn == WHITE:
+            self.turn_number += 1
+            if isinstance(piece, King):
+                if end[1] - start[1] == 2:
+                    self.latex_notation += str(self.turn_number) + "." + "O-O " 
+                elif abs(end[1] - start[1]) == 3:
+                    self.latex_notation += str(self.turn_number) + "." + "O-O-O " 
+            else: 
+                self.latex_notation += str(self.turn_number) + "." + notation_name + ches_notation_col[end[1]] + ches_notation_row[end[0]] + " "
+        else:
+            if isinstance(piece, King):
+                if end[1] - start[1] == 2:
+                    self.latex_notation += str(self.turn_number) + "." + "O-O" 
+                elif abs(end[1] - start[1]) == 3:
+                    self.latex_notation += str(self.turn_number) + "." + "O-O-O" 
+            else:
+                self.latex_notation += notation_name + ches_notation_col[end[1]] + ches_notation_row[end[0]]
+            latex_write(self.doc, self.latex_notation)
+            self.latex_notation = ""
+            
     def _get_other_player(self, color):
         return WHITE if color == BLACK else BLACK
 

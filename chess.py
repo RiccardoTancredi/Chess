@@ -5,11 +5,13 @@ from dinamics.piece import Piece
 from dinamics.board import Board, TestBoard, DrawBoard
 from dinamics.constants import *
 from dinamics.draw import Draw
+from latex import *
 
 FPS = 60
 
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption('Chess')
+
 
 
 def get_row_col_from_mouse(pos):
@@ -23,6 +25,7 @@ def get_row_col_from_mouse(pos):
 game = Game()
 draw = Draw(WIN, game, "./assets")
 
+latex_file_name = game.latex_file_name
 
 def main():
     run = True
@@ -81,3 +84,6 @@ def main():
 main()
 
 print(game.notation)
+doc = game.doc
+# end_doc = latex_end(latex_file_name)
+PDF = convert_to_PDF(doc, "Chess_Game")
