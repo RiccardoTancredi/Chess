@@ -6,4 +6,5 @@ venv/
 *.aux
 *.log
 *.tex
+*.pdf
 prova.py

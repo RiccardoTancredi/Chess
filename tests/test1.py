@@ -1,6 +1,8 @@
 import unittest
+from copy import deepcopy
+from random import randint
 
-from dinamics.board import Board
+from dinamics.board import Board, ChessBoard
 from dinamics.constants import BLACK, WHITE, ROWS, COLS
 from dinamics.game import Game
 from dinamics.pieces import *
@@ -216,6 +218,44 @@ class TestCheckmate(unittest.TestCase):
         self.assertIn((1, 5), moves)
 
 
+class TestBoardSave(unittest.TestCase):
+    def setUp(self):
+        self.board = ChessBoard()
+
+    def test_save_and_rollback1(self):
+        board = self.board
+        copy_board = self.board.board.copy()
+        board.save_board()
+        for x in range(100):
+            start_pos = (randint(0, ROWS - 1), randint(0, COLS - 1))
+            end_pos = (randint(0, ROWS - 1), randint(0, COLS - 1))
+            if start_pos == end_pos:
+                continue
+            board.move(start_pos, end_pos)
+        board.rollback_board()
+        for row in range(ROWS):
+            for col in range(COLS):
+                pos = (row, col)
+                self.assertEqual(board.get_piece(pos), copy_board[row][col])
+
+    def test_save_and_rollback2(self):
+        board = self.board
+        copy_board = self.board.board.copy()
+        board.save_board()
+        for x in range(100):
+            start_pos = (randint(0, ROWS - 1), randint(0, COLS - 1))
+            end_pos = (randint(0, ROWS - 1), randint(0, COLS - 1))
+            piece = board.get_piece(start_pos)
+            board.put(end_pos, piece)
+        board.rollback_board()
+        for row in range(ROWS):
+            for col in range(COLS):
+                pos = (row, col)
+                self.assertEqual(board.get_piece(pos), copy_board[row][col])
+
+
+
+
 def get_suite():
     suite = unittest.TestSuite()
     suite.addTest(TestCastlingBasic("Test Basic Castling"))
@@ -224,6 +264,7 @@ def get_suite():
     suite.addTest(TestEnPassant("Test En Passant"))
     suite.addTest(TestBishopMoves("Test Bishop Moves"))
     suite.addTest(TestCheckmate("Test Checkmate"))
+    suite.addTest(TestBoardSave("Test Board Save and Rollback"))
     return suite
 
 

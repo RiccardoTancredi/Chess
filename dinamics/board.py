@@ -16,6 +16,9 @@ class Board:
         self._board_copy = []
         self.initialize()
 
+        self._track = False
+        self._differences = {}
+
     def initialize(self):
         for x in range(ROWS):
             self.board.append([None] * COLS)
@@ -41,23 +44,20 @@ class Board:
 
     def move(self, start_pos, end_pos):
         srow, scol = start_pos
-        erow, ecol = end_pos
-        self.board[erow][ecol] = self.board[srow][scol]
-        self.board[srow][scol] = None
+        # stessa cosa ma usiamo così un metodo centralizzato
+        self.put(end_pos, piece=self.board[srow][scol])
+        self.put(start_pos, piece=None)
 
     def save_board(self):
-        self._board_copy = []
-        for i in range(ROWS):
-            self._board_copy.append([])
-            for j in range(COLS):
-                self._board_copy[i].append(self.get_piece((i, j)))
+        self._track = True
 
     def rollback_board(self):
-        self.board = []
-        for i in range(ROWS):
-            self.board.append([])
-            for j in range(COLS):
-                self.board[i].append(self._board_copy[i][j])
+        self._track = False
+
+        for (row, col), piece in self._differences.items():
+            self.board[row][col] = piece
+
+        self._differences.clear()
 
     def put(self, position, piece=None, clss=None, color=None):
         # adesso possiamo anche passargli semplicemente la classe ed il colore invece che tutto il pezzo
@@ -65,12 +65,21 @@ class Board:
         if clss and color:
             piece = clss(color)
 
+        # ad ogni mossa ci salviamo chi è sparito e da dove
+        self._track_change(position, self.board[row][col])
+
         self.board[row][col] = piece
 
-    def clear(self):
-        for i in range(ROWS):
-            for j in range(COLS):
-                self.board[i][j] = None
+    def _track_change(self, pos, old_piece):
+        # se vogliamo salvare la board, teniamo traccia di cosa si è mosso
+        if self._track:
+            if pos not in self._differences:
+                self._differences[pos] = old_piece
+
+    # def clear(self):
+    #     for i in range(ROWS):
+    #         for j in range(COLS):
+    #             self.board[i][j] = None
 
     def __repr__(self) -> str:
         emojis_w = {King: "♔", Queen: "♕", Rook: "♖", Bishop: "♗", Knight: "♘", Pawn: "♙"}
