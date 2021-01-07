@@ -17,8 +17,8 @@ C_BLUE = (0, 0, 255)
 
 
 class Draw:
-    def __init__(self, win, game, assets_dir):
-        self.win = win
+    def __init__(self, window, game, assets_dir):
+        self.window = window
         self.board = game.board
         self.game = game
         self.scale_factor = (int(WIDTH * 50 / 400), int(HEIGHT * 50 / 400))
@@ -64,10 +64,11 @@ class Draw:
         pygame.display.update()
 
     def draw_squares(self):
-        self.win.fill(C_BLACK)
+        self.window.fill(C_BLACK)
         for row in range(ROWS):
             for col in range(row % 2, COLS, 2):
-                pygame.draw.rect(self.win, C_WHITE, (row * SQUARE_SIZE, col * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
+                pygame.draw.rect(self.window, C_WHITE, (row * SQUARE_SIZE, col * SQUARE_SIZE,
+                                                        SQUARE_SIZE, SQUARE_SIZE))
 
     def draw_pieces(self):
         for (row, col), piece in self.board.get_pieces(valid=True):
@@ -80,12 +81,12 @@ class Draw:
         elif color == BLACK:
             image = self.black_pieces[clss]
 
-        return self.win.blit(image, (x, y))
+        return self.window.blit(image, (x, y))
 
     def draw_promotion(self, color):
         height = 100
         starty = (HEIGHT - height) / 2
-        pygame.draw.rect(self.win, C_BLUE, Rect((0, starty), (WIDTH, height)))
+        pygame.draw.rect(self.window, C_BLUE, Rect((0, starty), (WIDTH, height)))
 
         y_margin = (height - SQUARE_SIZE) / 2
         spacing = 30
@@ -98,12 +99,12 @@ class Draw:
     def draw_valid_moves(self, moves):
         for (row, col) in moves:
             position = (col * SQUARE_SIZE + SQUARE_SIZE // 2, row * SQUARE_SIZE + SQUARE_SIZE // 2)
-            pygame.draw.circle(self.win, C_BLUE, position, 10)
+            pygame.draw.circle(self.window, C_BLUE, position, 10)
 
     def draw_checkmate(self, winner):
         height = 200
         starty = (HEIGHT - height) / 2
-        pygame.draw.rect(self.win, C_BLUE, Rect((0, starty), (WIDTH, height)))
+        pygame.draw.rect(self.window, C_BLUE, Rect((0, starty), (WIDTH, height)))
 
         y_margin = (height - SQUARE_SIZE) / 2
         self.draw_piece(King, winner, WIDTH / 8, starty + y_margin)
@@ -112,16 +113,16 @@ class Draw:
         label = self.font.render("VINCE", 2, color)  # 2 = antialiasing
         y_label = (height - label.get_size()[1]) / 2
         x_label = (WIDTH - label.get_size()[0] - 50) / 2 + SQUARE_SIZE
-        self.win.blit(label, (x_label, starty + y_label))
+        self.window.blit(label, (x_label, starty + y_label))
 
     def draw_draw(self):
         height = 200
         starty = (HEIGHT - height) / 2
-        pygame.draw.rect(self.win, C_BLUE, Rect((0, starty), (WIDTH, height)))
+        pygame.draw.rect(self.window, C_BLUE, Rect((0, starty), (WIDTH, height)))
         label = self.font.render("PATTA", 2, C_WHITE)  # 2 = antialiasing
         y_label = (height - label.get_size()[1]) / 2
         x_label = (WIDTH - label.get_size()[0]) / 2
-        self.win.blit(label, (x_label, starty + y_label))
+        self.window.blit(label, (x_label, starty + y_label))
 
     def choose_promotion(self, x, y):
         choosen = None

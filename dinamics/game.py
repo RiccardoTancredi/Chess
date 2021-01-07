@@ -15,7 +15,7 @@ class Game:
             self.board = ChessBoard()
 
         self.turn = WHITE
-        self.turn_number  = 0
+        self.turn_number = 0
         self.notation = []
         self.latex_notation = ""
         self.need_promotion = None

@@ -86,4 +86,4 @@ main()
 print(game.notation)
 doc = game.doc
 # end_doc = latex_end(latex_file_name)
-PDF = convert_to_PDF(doc, "Chess_Game")
+# PDF = convert_to_PDF(doc, "Chess_Game")
