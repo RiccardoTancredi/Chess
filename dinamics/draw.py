@@ -49,6 +49,7 @@ class Draw:
             moves = []
 
         self.draw_squares()
+        self.draw_effects()
         self.draw_pieces()
         self.draw_valid_moves(moves)
         if self.game.status == Game.CHECKMATE:
@@ -67,8 +68,21 @@ class Draw:
         self.window.fill(C_BLACK)
         for row in range(ROWS):
             for col in range(row % 2, COLS, 2):
-                pygame.draw.rect(self.window, C_WHITE, (row * SQUARE_SIZE, col * SQUARE_SIZE,
-                                                        SQUARE_SIZE, SQUARE_SIZE))
+                self.draw_square((row, col), C_WHITE)
+
+    def draw_square(self, pos, color):
+        x = SQUARE_SIZE * pos[1]
+        y = SQUARE_SIZE * pos[0]
+        side = SQUARE_SIZE
+        pygame.draw.rect(self.window, color, (x, y, side, side))
+
+    def draw_effects(self):
+        checks = self.game.under_check_moves
+        for color, (king_pos, moves) in checks.items():
+            if moves:
+                self.draw_square(king_pos, (255, 0, 0))
+                for move in moves:
+                    self.draw_square(move, (180, 0, 0))
 
     def draw_pieces(self):
         for (row, col), piece in self.board.get_pieces(valid=True):

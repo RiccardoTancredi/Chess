@@ -30,12 +30,15 @@ class Board:
         else:
             pass
 
-    def get_pieces(self, valid=False):
+    def get_pieces(self, valid=False, color=None):
         pieces = []
         for i in range(ROWS):
             for j in range(COLS):
                 piece = self.get_piece((i, j))
                 if not piece and valid:
+                    continue
+
+                if color is not None and color != piece.color:
                     continue
 
                 value = ((i, j), piece)
