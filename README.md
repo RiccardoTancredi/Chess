@@ -21,7 +21,7 @@ Now this dream is finally true! The __DRAGON__ is the new incredible, and defini
 
 Basically, it combines the moves of both the Bishop and the Knight.
 
-Believe if I tell you that it is stronger than the Queen.
+Believe me if I tell you that it is stronger than the Queen.
 
 ![](Dragon.gif)
 
