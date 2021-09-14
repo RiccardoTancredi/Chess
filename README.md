@@ -1,7 +1,7 @@
 # Chess
 In this repository we are going to create a Chess Engine on our own.
 
-Using _pygame_ library we recreate the chess game, programming all the rules of each pieces, from easy moves to checks, castling and en passant.
+Using _pygame_ library we recreate the chess game, programming all the rules of each piece, from easy moves to checks, castling and en passant.
 
 There are still some issues that need to be solved.
 
